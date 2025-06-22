@@ -137,36 +137,6 @@
   </style>
 </head>
 <body>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
-      authDomain: "gamebox-a049d.firebaseapp.com",
-      projectId: "gamebox-a049d",
-      storageBucket: "gamebox-a049d.firebasestorage.app",
-      messagingSenderId: "978725902064",
-      appId: "1:978725902064:web:1793d66e2fc29910d05435"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          alert("✅ Login successful");
-          window.location.href = "dashboard.html"; // Redirect to dashboard
-        })
-        .catch(error => {
-          alert("❌ Login failed: " + error.message);
-        });
     });
   </script>
 </body>
