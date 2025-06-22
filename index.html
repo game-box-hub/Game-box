@@ -1,56 +1,100 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Game Box</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Box - Dashboard</title>
   <style>
     body {
-      font-family: sans-serif;
-      background-color: #111;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('gamebox-background.jpg') no-repeat center center fixed;
+      background-size: cover;
       color: white;
+      padding: 0;
+    }
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.7);
       padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background-color: rgba(10, 10, 10, 0.6);
+      border-radius: 15px;
+      margin-top: 40px;
+    }
+    h1, h2 {
+      text-align: center;
     }
     input, select, textarea, button {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      border-radius: 5px;
+      padding: 12px;
+      margin: 10px 0;
       border: none;
+      border-radius: 10px;
       font-size: 16px;
     }
     button {
-      background-color: #00aaff;
+      background-color: #1f2937;
       color: white;
       font-weight: bold;
-      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #374151;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+    }
+    .footer p {
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <h1>🎮 Game Box - Create Your Team</h1>
-
+  <div class="overlay">
+    <div class="container">
+      <h1>🎮 Game Box</h1>
+      <p style="text-align:center">Create or Join Esports Teams</p><h2>Create Team</h2>
   <form id="teamForm">
-    <input id="teamName" type="text" placeholder="Team Name" required />
+    <input id="teamName" placeholder="Team Name" required />
     <select id="game" required>
       <option value="">Select Game</option>
-      <option value="PUBG Mobile">PUBG Mobile</option>
-      <option value="Free Fire">Free Fire</option>
-      <option value="BGMI">BGMI</option>
-      <option value="Valorant">Valorant</option>
-      <option value="CS GO">CS GO</option>
+      <option>PUBG Mobile - ₹120</option>
+      <option>Game for Peace - ₹120</option>
+      <option>Free Fire - ₹30</option>
+      <option>Free Fire Max - ₹50</option>
+      <option>PUBG Lite - ₹60</option>
+      <option>BGMI - ₹120</option>
+      <option>Valorant - ₹300</option>
+      <option>CS GO - Free</option>
+      <option>Indus - ₹20</option>
+      <option>PUBG PC - ₹300</option>
     </select>
-    <input id="players" type="number" placeholder="Number of Players" required />
+    <input id="players" type="number" placeholder="Players" required />
     <textarea id="description" placeholder="Team Description" required></textarea>
     <p><strong>Pay to UPI:</strong> deshwalaarav80@okhdfcbank</p>
     <button type="submit">Submit Team</button>
   </form>
 
-  <!-- Firebase CDN Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <h2>Upcoming Tournaments</h2>
+  <ul>
+    <li>🎯 Valorant Showdown - 25 June</li>
+    <li>🔥 BGMI Mega Cup - 30 June</li>
+    <li>🎮 CS GO Classic - 3 July</li>
+  </ul>
 
-  <script>
+  <div class="footer">
+    <p>📞 Customer Support: 7668572679</p>
+    <p>❤️ Love donation via UPI: deshwalaarav80@okhdfcbank</p>
+    <p>Thank you for registering your team! We'll notify you via email.</p>
+  </div>
+</div>
+
+  </div>  <!-- Firebase SDK -->  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
       authDomain: "gamebox-a049d.firebaseapp.com",
@@ -65,23 +109,16 @@
 
     document.getElementById("teamForm").addEventListener("submit", function(e) {
       e.preventDefault();
-
-      const teamData = {
+      const data = {
         teamName: document.getElementById("teamName").value,
         game: document.getElementById("game").value,
         players: document.getElementById("players").value,
         description: document.getElementById("description").value
       };
-
-      db.ref("teams").push(teamData)
-        .then(() => {
-          alert("✅ Team submitted successfully!");
-          document.getElementById("teamForm").reset();
-        })
-        .catch(error => {
-          alert("❌ Error submitting team: " + error.message);
-        });
+      db.ref("teams").push(data).then(() => {
+        alert("✅ Team created successfully!");
+        document.getElementById("teamForm").reset();
+      }).catch(err => alert("Error: " + err));
     });
-  </script>
-</body>
+  </script></body>
 </html>
