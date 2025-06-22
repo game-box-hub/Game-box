@@ -1,248 +1,66 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Game Box</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game Box - Team Manager</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: url('A_digital_composite_image_for_Game_Box_showcases.png') no-repeat center center fixed;
-      background-size: cover;
-      background-color: #0f0f0f;
-      color: white;
-    }
-    header {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      text-align: center;
-      border-bottom: 2px solid #00bfff;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2em;
-      color: #00bfff;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      background: rgba(26, 26, 26, 0.85);
-      padding: 10px;
-      flex-wrap: wrap;
-    }
-    nav a {
-      margin: 10px;
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    nav a:hover {
-      color: #00bfff;
-    }
-    .container {
-      padding: 30px;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.75);
-      border-radius: 12px;
-      margin: 20px;
-    }
-    .btn {
-      background: #00bfff;
-      border: none;
-      color: white;
-      padding: 10px 20px;
-      font-size: 1em;
-      margin-top: 20px;
-      cursor: pointer;
-      border-radius: 8px;
-    }
-    .btn:hover {
-      background: #008fcc;
-    }
-    form {
-      max-width: 500px;
-      margin: auto;
-      background: rgba(26, 26, 26, 0.85);
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: none;
-      background: #333;
-      color: white;
-    }
-    table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 12px;
-      border: 1px solid #444;
-    }
-    th {
-      background-color: rgba(26, 26, 26, 0.85);
-      color: #00bfff;
-    }
-    td {
-      background-color: rgba(34, 34, 34, 0.85);
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      border-top: 1px solid #333;
-      margin-top: 40px;
-    }
-  </style>
 </head>
-<body>
-  <header>
-    <h1>Game Box</h1>
-    <p>Manage & Build Your Esports Team</p>
-  </header>
-  <nav>
-    <a href="#">Home</a>
-    <a href="#create">Create Team</a>
-    <a href="#join">Join Team</a>
-    <a href="#teams">Team List</a>
-    <a href="#schedule">E-sports Schedule</a>
-    <a href="#login">Login</a>
-    <a href="#contact">Contact</a>
-  </nav>
+<body style="font-family:sans-serif; background-color:#111; color:white; padding:20px">
+  <h1>🎮 Game Box - Create Your Team</h1>
 
-  <div class="container" id="create">
-    <h2>Create Your Team</h2>
-    <form>
-      <input type="text" placeholder="Team Name" required />
-      <select id="gameSelect" required onchange="updatePrice()">
-        <option value="">Select Game</option>
-        <option value="PUBG Mobile">PUBG Mobile</option>
-        <option value="PUBG Mobile Lite">PUBG Mobile Lite</option>
-        <option value="PUBG PC">PUBG PC</option>
-        <option value="Game for Peace">Game for Peace</option>
-        <option value="Free Fire">Free Fire</option>
-        <option value="BGMI">BGMI</option>
-        <option value="Valorant">Valorant</option>
-        <option value="PUBG: New State">PUBG: New State</option>
-        <option value="CS: GO">CS: GO</option>
-      </select>
-      <input type="number" placeholder="Number of Players (e.g. 4 or 5)" required />
-      <textarea rows="4" placeholder="Team Description" required></textarea>
-      <p id="paymentText"><strong>Select a game to see the payment amount.</strong></p>
-      <p id="paymentText"><strong>Select a game to see the payment amount.</strong></p>
-<p id="upiInfo" style="display:none;">
-  <strong>Pay to UPI ID: deshwalaarav80@okhdfcbank</strong>
-</p>
-      <button class="btn" type="submit" id="submitButton">Submit</button>
-    </form>
-  </div>
+  <form id="teamForm">
+    <input id="teamName" type="text" placeholder="Team Name" required /><br/><br/>
+    <select id="game" required>
+      <option value="">Select Game</option>
+      <option value="PUBG Mobile">PUBG Mobile</option>
+      <option value="Free Fire">Free Fire</option>
+      <option value="BGMI">BGMI</option>
+      <option value="Valorant">Valorant</option>
+      <option value="CS GO">CS GO</option>
+    </select><br/><br/>
+    <input id="players" type="number" placeholder="Number of Players" required /><br/><br/>
+    <textarea id="description" placeholder="Team Description" required></textarea><br/><br/>
+    <p><strong>Pay to UPI ID:</strong> deshwalaarav80@okhdfcbank</p>
+    <button type="submit">Submit Team</button>
+  </form>
 
-  <div class="container" id="schedule">
-    <h2>🎮 Upcoming E-sports Schedule</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Game</th>
-          <th>Tournament</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>BGMI</td>
-          <td>BGIS 2025</td>
-          <td>June 28</td>
-          <td>5:00 PM</td>
-          <td>Open</td>
-        </tr>
-        <tr>
-          <td>Free Fire</td>
-          <td>FF Championship</td>
-          <td>July 3</td>
-          <td>3:00 PM</td>
-          <td>Closed</td>
-        </tr>
-        <tr>
-          <td>Valorant</td>
-          <td>VCT Asia Playoff</td>
-          <td>July 10</td>
-          <td>6:00 PM</td>
-          <td>Open</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="container" id="login">
-    <h2>Login to Game Box</h2>
-    <form>
-      <input type="text" placeholder="Username" required />
-      <input type="email" placeholder="Email" required />
-      <input type="password" placeholder="Password" required />
-      <button class="btn" type="submit">Login</button>
-    </form>
-  </div>
-
-  <footer>
-    &copy; 2025 Game Box. All rights reserved.
-  </footer>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
   <script>
-    function updatePrice() {
-      const game = document.getElementById('gameSelect').value;
-      const paymentText = document.getElementById('paymentText');
-      const upiInfo = document.getElementById('upiInfo');
-      const submitButton = document.getElementById('submitButton');
-      let price = 0;
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
+      authDomain: "gamebox-a049d.firebaseapp.com",
+      projectId: "gamebox-a049d",
+      storageBucket: "gamebox-a049d.firebasestorage.app",
+      messagingSenderId: "978725902064",
+      appId: "1:978725902064:web:1793d66e2fc29910d05435"
+    };
 
-      switch (game) {
-        case 'PUBG Mobile':
-        case 'BGMI':
-        case 'Game for Peace':
-        case 'PUBG: New State':
-          price = 120;
-          break;
-        case 'Free Fire':
-          price = 80;
-          break;
-        case 'PUBG PC':
-        case 'Valorant':
-          price = 300;
-          break;
-        case 'PUBG Mobile Lite':
-          price = 60;
-          break;
-        case 'CS: GO':
-          price = 0;
-          break;
-        default:
-          price = 0;
-      }
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-      if (price > 0) {
-        paymentText.innerHTML = `<strong>To create a team for <span style='color:#00bfff;'>${game}</span>, pay ₹${price}.</strong>`;
-        upiInfo.style.display = 'block';
-        submitButton.innerText = `Submit & Pay ₹${price}`;
-      } else if (game === 'CS: GO') {
-        paymentText.innerHTML = `<strong>Creating a CS: GO team is <span style='color:lightgreen;'>FREE</span>!</strong>`;
-        upiInfo.style.display = 'none';
-        submitButton.innerText = 'Create Team (Free)';
-      } else {
-        paymentText.innerHTML = '<strong>Select a game to see the payment amount.</strong>';
-        upiInfo.style.display = 'none';
-        submitButton.innerText = 'Submit';
-      }
-    }
+    // Submit form
+    document.getElementById("teamForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const teamData = {
+        teamName: document.getElementById("teamName").value,
+        game: document.getElementById("game").value,
+        players: document.getElementById("players").value,
+        description: document.getElementById("description").value
+      };
+
+      db.ref("teams").push(teamData)
+        .then(() => {
+          alert("✅ Team submitted!");
+          document.getElementById("teamForm").reset();
+        })
+        .catch(err => alert("❌ Error: " + err.message));
+    });
   </script>
 </body>
 </html>
