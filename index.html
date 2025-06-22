@@ -4,12 +4,34 @@
   <meta charset="UTF-8" />
   <title>Game Box</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #111;
+      color: white;
+      padding: 20px;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      background-color: #00aaff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
 </head>
-<body style="font-family:sans-serif; background-color:#111; color:white; padding:20px">
+<body>
   <h1>🎮 Game Box - Create Your Team</h1>
 
   <form id="teamForm">
-    <input id="teamName" type="text" placeholder="Team Name" required /><br/><br/>
+    <input id="teamName" type="text" placeholder="Team Name" required />
     <select id="game" required>
       <option value="">Select Game</option>
       <option value="PUBG Mobile">PUBG Mobile</option>
@@ -17,19 +39,18 @@
       <option value="BGMI">BGMI</option>
       <option value="Valorant">Valorant</option>
       <option value="CS GO">CS GO</option>
-    </select><br/><br/>
-    <input id="players" type="number" placeholder="Number of Players" required /><br/><br/>
-    <textarea id="description" placeholder="Team Description" required></textarea><br/><br/>
-    <p><strong>Pay to UPI ID:</strong> deshwalaarav80@okhdfcbank</p>
+    </select>
+    <input id="players" type="number" placeholder="Number of Players" required />
+    <textarea id="description" placeholder="Team Description" required></textarea>
+    <p><strong>Pay to UPI:</strong> deshwalaarav80@okhdfcbank</p>
     <button type="submit">Submit Team</button>
   </form>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase CDN Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
   <script>
-    // Your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
       authDomain: "gamebox-a049d.firebaseapp.com",
@@ -39,11 +60,9 @@
       appId: "1:978725902064:web:1793d66e2fc29910d05435"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Submit form
     document.getElementById("teamForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
@@ -56,10 +75,12 @@
 
       db.ref("teams").push(teamData)
         .then(() => {
-          alert("✅ Team submitted!");
+          alert("✅ Team submitted successfully!");
           document.getElementById("teamForm").reset();
         })
-        .catch(err => alert("❌ Error: " + err.message));
+        .catch(error => {
+          alert("❌ Error submitting team: " + error.message);
+        });
     });
   </script>
 </body>
