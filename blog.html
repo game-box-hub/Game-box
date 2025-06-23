@@ -60,7 +60,7 @@
       background-color: #1d4ed8;
     }
 
-    input {
+    input, select {
       width: 100%;
       padding: 12px;
       border: 1px solid #374151;
@@ -89,7 +89,7 @@
       <tr><td>Game for Peace</td><td>₹120</td></tr>
       <tr><td>Free Fire</td><td>₹30</td></tr>
       <tr><td>Free Fire Max</td><td>₹50</td></tr>
-      <tr><td>PUBG Lite</td><td>₹60</td></tr>
+      <tr><td>PUBG Lite</td><td>₹60 → ₹30</td></tr>
       <tr><td>BGMI</td><td>₹120</td></tr>
       <tr><td>Valorant</td><td>₹300</td></tr>
       <tr><td>CS:GO</td><td>Free</td></tr>
@@ -100,6 +100,21 @@
     <button onclick="showForm()">🎮 Join Game</button>
 
     <div id="formContainer" style="display: none; margin-top: 30px;">
+      <label>Select Game:</label><br>
+      <select id="gameSelect" required>
+        <option value="">-- Select Game --</option>
+        <option value="PUBG Mobile">PUBG Mobile</option>
+        <option value="Game for Peace">Game for Peace</option>
+        <option value="Free Fire">Free Fire</option>
+        <option value="Free Fire Max">Free Fire Max</option>
+        <option value="PUBG Lite">PUBG Lite</option>
+        <option value="BGMI">BGMI</option>
+        <option value="Valorant">Valorant</option>
+        <option value="CS:GO">CS:GO</option>
+        <option value="Indus">Indus</option>
+        <option value="PUBG PC">PUBG PC</option>
+      </select><br>
+
       <label>Game UID:</label><br>
       <input type="text" id="uid" placeholder="Enter your UID" required><br>
 
@@ -109,7 +124,7 @@
       <label>Contact Number:</label><br>
       <input type="tel" id="contact" placeholder="Enter your Contact Number" required><br>
 
-      <button onclick="submitAndPay()">Submit & Pay ₹20</button>
+      <button onclick="submitAndPay()">Submit & Pay</button>
     </div>
 
     <div id="thankyouMessage" style="display: none; margin-top: 30px; color: #10b981;">
@@ -118,26 +133,48 @@
   </div>
 
   <script>
+    const prices = {
+      "PUBG Mobile": 120,
+      "Game for Peace": 120,
+      "Free Fire": 30,
+      "Free Fire Max": 50,
+      "PUBG Lite": 30, // ₹30 discount applied
+      "BGMI": 120,
+      "Valorant": 300,
+      "CS:GO": 0,
+      "Indus": 20,
+      "PUBG PC": 300
+    };
+
     function showForm() {
       document.getElementById("formContainer").style.display = "block";
     }
 
     function submitAndPay() {
+      const game = document.getElementById("gameSelect").value;
       const uid = document.getElementById("uid").value.trim();
       const team = document.getElementById("teamName").value.trim();
       const contact = document.getElementById("contact").value.trim();
 
-      if (!uid || !team || !contact) {
+      if (!game || !uid || !team || !contact) {
         alert("Please fill all fields before proceeding.");
         return;
       }
 
-      // Show thank-you message
+      const amount = prices[game];
+      if (amount === undefined) {
+        alert("Invalid game selected.");
+        return;
+      }
+
       document.getElementById("thankyouMessage").style.display = "block";
 
-      // Open UPI link
-      const upiLink = "upi://pay?pa=deshwalaarav80@okhdfcbank&pn=GameBox&am=20&cu=INR";
-      window.location.href = upiLink;
+      if (amount > 0) {
+        const upiLink = `upi://pay?pa=deshwalaarav80@okhdfcbank&pn=GameBox&am=${amount}&cu=INR`;
+        window.location.href = upiLink;
+      } else {
+        alert("Game is free to join. No payment needed.");
+      }
     }
   </script>
 </body>
