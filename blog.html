@@ -105,13 +105,13 @@
     auth.onAuthStateChanged((user) => {
       if (!user) {
         alert("Please login first.");
-        window.location.href = "index.html";
+        window.location.href = "blog.html";
       }
     });
 
     function logout() {
       auth.signOut().then(() => {
-        window.location.href = "index.html";
+        window.location.href = "blog.html";
       });
     }
   </script>
