@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Game Box - blog</title>
+  <title>Game Box - Blog</title>
   <style>
     body {
       margin: 0;
@@ -46,7 +46,7 @@
     }
 
     button {
-      margin-top: 30px;
+      margin-top: 20px;
       padding: 12px 24px;
       background-color: #2563eb;
       color: white;
@@ -58,6 +58,20 @@
 
     button:hover {
       background-color: #1d4ed8;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      background-color: #1f2937;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    label {
+      font-weight: bold;
     }
   </style>
 </head>
@@ -83,36 +97,47 @@
       <tr><td>PUBG PC</td><td>₹300</td></tr>
     </table>
 
-    <button onclick="logout()">Logout</button>
+    <button onclick="showForm()">🎮 Join Game</button>
+
+    <div id="formContainer" style="display: none; margin-top: 30px;">
+      <label>Game UID:</label><br>
+      <input type="text" id="uid" placeholder="Enter your UID" required><br>
+
+      <label>Team Name:</label><br>
+      <input type="text" id="teamName" placeholder="Enter your Team Name" required><br>
+
+      <label>Contact Number:</label><br>
+      <input type="tel" id="contact" placeholder="Enter your Contact Number" required><br>
+
+      <button onclick="submitAndPay()">Submit & Pay ₹20</button>
+    </div>
+
+    <div id="thankyouMessage" style="display: none; margin-top: 30px; color: #10b981;">
+      ✅ Thank you for joining! We’ll contact you soon.
+    </div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
-      authDomain: "gamebox-a049d.firebaseapp.com",
-      projectId: "gamebox-a049d",
-      storageBucket: "gamebox-a049d.appspot.com",
-      messagingSenderId: "978725902064",
-      appId: "1:978725902064:web:1793d66e2fc29910d05435"
-    };
+    function showForm() {
+      document.getElementById("formContainer").style.display = "block";
+    }
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    function submitAndPay() {
+      const uid = document.getElementById("uid").value.trim();
+      const team = document.getElementById("teamName").value.trim();
+      const contact = document.getElementById("contact").value.trim();
 
-    auth.onAuthStateChanged((user) => {
-      if (!user) {
-        alert("Please login first.");
-    <a href="blog.html">Go to Blog</a>
+      if (!uid || !team || !contact) {
+        alert("Please fill all fields before proceeding.");
+        return;
       }
-    });
 
-    function logout() {
-      auth.signOut().then(() => {
-  <a href="blog.html">Go to Blog</a>
-      });
+      // Show thank-you message
+      document.getElementById("thankyouMessage").style.display = "block";
+
+      // Open UPI link
+      const upiLink = "upi://pay?pa=deshwalaarav80@okhdfcbank&pn=GameBox&am=20&cu=INR";
+      window.location.href = upiLink;
     }
   </script>
 </body>
