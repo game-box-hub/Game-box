@@ -115,6 +115,9 @@
         <option value="PUBG PC">PUBG PC</option>
       </select><br>
 
+      <label>Email:</label><br>
+      <input type="email" id="email" placeholder="Enter your Email" required><br>
+
       <label>Game UID:</label><br>
       <input type="text" id="uid" placeholder="Enter your UID" required><br>
 
@@ -148,6 +151,9 @@
         <option value="Indus">Indus</option>
         <option value="PUBG PC">PUBG PC</option>
       </select><br>
+
+      <label>Email:</label><br>
+      <input type="email" id="requestEmail" placeholder="Enter your Email" required><br>
 
       <label>Your Game Level:</label><br>
       <input type="text" id="requestLevel" placeholder="e.g., Gold, Platinum, Ace" required><br>
@@ -210,11 +216,12 @@
 
     function submitAndPay() {
       const game = document.getElementById("gameSelect").value;
+      const email = document.getElementById("email").value.trim();
       const uid = document.getElementById("uid").value.trim();
       const team = document.getElementById("teamName").value.trim();
       const contact = document.getElementById("contact").value.trim();
 
-      if (!game || !uid || !team || !contact) {
+      if (!game || !uid || !team || !contact || !email) {
         alert("Please fill all fields before proceeding.");
         return;
       }
@@ -231,6 +238,7 @@
         uid: uid,
         team: team,
         contact: contact,
+        email: email,
         timestamp: new Date().toISOString()
       };
 
@@ -255,10 +263,11 @@
 
     function submitRequest() {
       const game = document.getElementById("requestGame").value;
+      const email = document.getElementById("requestEmail").value.trim();
       const level = document.getElementById("requestLevel").value.trim();
       const uid = document.getElementById("requestUID").value.trim();
 
-      if (!game || !level || !uid) {
+      if (!game || !level || !uid || !email) {
         alert("Please fill all fields.");
         return;
       }
@@ -274,6 +283,7 @@
         game: game,
         level: level,
         uid: uid,
+        email: email,
         timestamp: new Date().toISOString()
       };
 
