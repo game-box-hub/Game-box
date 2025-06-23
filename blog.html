@@ -105,13 +105,13 @@
     auth.onAuthStateChanged((user) => {
       if (!user) {
         alert("Please login first.");
-        window.location.href = "blog.html";
+    <a href="blog.html">Go to Blog</a>
       }
     });
 
     function logout() {
       auth.signOut().then(() => {
-        window.location.href = "blog.html";
+  <a href="blog.html">Go to Blog</a>
       });
     }
   </script>
