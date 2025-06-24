@@ -71,6 +71,13 @@ label {
   font-weight: bold;
 }
 
+form {
+  margin-top: 30px;
+  background-color: #1f2937;
+  padding: 20px;
+  border-radius: 12px;
+}
+
   </style>
 </head>
 <body>
@@ -98,7 +105,23 @@ label {
   <tr><td>PUBG PC</td><td>₹300</td></tr>
 </table>
 
-<!-- Additional features (forms, Firebase, etc.) go here -->
+<!-- ✅ Team Registration Form -->
+<form id="teamForm">
+  <h2>Join a Tournament</h2>
+  <label for="teamName">Team Name</label>
+  <input type="text" id="teamName" required />
+
+  <label for="uid">Player UID</label>
+  <input type="text" id="uid" required />
+
+  <label for="email">Email</label>
+  <input type="email" id="email" required />
+
+  <label for="phone">Phone Number</label>
+  <input type="tel" id="phone" required />
+
+  <button type="button" onclick="submitTeamForm()">Submit & Pay</button>
+</form>
 
 <!-- ✅ About Us Section -->
 <hr style="margin-top: 60px; border: 1px solid #374151;">
@@ -123,15 +146,21 @@ label {
 
   </div>  <!-- Firebase logic to only save team data after payment -->  <script>
     function submitTeamForm() {
-      const paymentConfirmed = confirm("Please complete your UPI payment. Click OK only after payment is successful.");
+      const teamName = document.getElementById('teamName').value;
+      const uid = document.getElementById('uid').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+
+      const paymentConfirmed = confirm("Please complete your UPI payment to deshwalaarav80@okhdfcbank. Click OK only after payment is successful.");
+
       if (!paymentConfirmed) {
         alert("Payment not completed. Team data will not be saved.");
         return;
       }
 
-      // Save to Firebase only after confirmation
-      // Example:
-      // firebase.database().ref('teams').push({ teamName, uid, contact, email });
+      // Save to Firebase (example structure)
+      // firebase.database().ref('teams').push({ teamName, uid, email, phone });
+
       alert("Thank you! Your team has been registered.");
     }
   </script></body>
