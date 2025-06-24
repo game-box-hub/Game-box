@@ -187,15 +187,15 @@ form {
       const phone = document.getElementById('phone').value;
       const price = gamePrices[game] || 0;
 
-      let proceed = true;
-
       if (price > 0) {
-        proceed = confirm(`Please complete your UPI payment of ₹${price} to deshwalaarav80@okhdfcbank. Click OK only after payment is successful.`);
-      }
+        const upiLink = `upi://pay?pa=deshwalaarav80@okhdfcbank&pn=GameBox&cu=INR&am=${price}`;
+        window.location.href = upiLink;
 
-      if (!proceed) {
-        alert("Payment not completed. Team data will not be saved.");
-        return;
+        const paymentConfirmed = confirm(`Did you complete your UPI payment of ₹${price}? Click OK to confirm.`);
+        if (!paymentConfirmed) {
+          alert("Payment not completed. Team data will not be saved.");
+          return;
+        }
       }
 
       // Save to Firebase (example)
