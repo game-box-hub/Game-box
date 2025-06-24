@@ -108,6 +108,20 @@ form {
 <!-- ✅ Team Registration Form -->
 <form id="teamForm">
   <h2>Join a Tournament</h2>
+  <label for="game">Select Game</label>
+  <select id="game" required onchange="updatePrice()">
+    <option value="PUBG Mobile">PUBG Mobile - ₹120</option>
+    <option value="Game for Peace">Game for Peace - ₹120</option>
+    <option value="Free Fire">Free Fire - ₹30</option>
+    <option value="Free Fire Max">Free Fire Max - ₹50</option>
+    <option value="PUBG Lite">PUBG Lite - ₹120</option>
+    <option value="BGMI">BGMI - ₹120</option>
+    <option value="Valorant">Valorant - ₹300</option>
+    <option value="CS:GO">CS:GO - Free</option>
+    <option value="Indus">Indus - ₹20</option>
+    <option value="PUBG PC">PUBG PC - ₹300</option>
+  </select>
+
   <label for="teamName">Team Name</label>
   <input type="text" id="teamName" required />
 
@@ -120,7 +134,7 @@ form {
   <label for="phone">Phone Number</label>
   <input type="tel" id="phone" required />
 
-  <button type="button" onclick="submitTeamForm()">Submit & Pay</button>
+  <button type="button" id="submitBtn" onclick="submitTeamForm()">Submit & Pay ₹120</button>
 </form>
 
 <!-- ✅ About Us Section -->
@@ -145,21 +159,47 @@ form {
 </div>
 
   </div>  <!-- Firebase logic to only save team data after payment -->  <script>
+    const gamePrices = {
+      "PUBG Mobile": 120,
+      "Game for Peace": 120,
+      "Free Fire": 30,
+      "Free Fire Max": 50,
+      "PUBG Lite": 120,
+      "BGMI": 120,
+      "Valorant": 300,
+      "CS:GO": 0,
+      "Indus": 20,
+      "PUBG PC": 300
+    };
+
+    function updatePrice() {
+      const game = document.getElementById('game').value;
+      const price = gamePrices[game] || 0;
+      const button = document.getElementById('submitBtn');
+      button.textContent = price > 0 ? `Submit & Pay ₹${price}` : 'Submit (Free)';
+    }
+
     function submitTeamForm() {
+      const game = document.getElementById('game').value;
       const teamName = document.getElementById('teamName').value;
       const uid = document.getElementById('uid').value;
       const email = document.getElementById('email').value;
       const phone = document.getElementById('phone').value;
+      const price = gamePrices[game] || 0;
 
-      const paymentConfirmed = confirm("Please complete your UPI payment to deshwalaarav80@okhdfcbank. Click OK only after payment is successful.");
+      let proceed = true;
 
-      if (!paymentConfirmed) {
+      if (price > 0) {
+        proceed = confirm(`Please complete your UPI payment of ₹${price} to deshwalaarav80@okhdfcbank. Click OK only after payment is successful.`);
+      }
+
+      if (!proceed) {
         alert("Payment not completed. Team data will not be saved.");
         return;
       }
 
-      // Save to Firebase (example structure)
-      // firebase.database().ref('teams').push({ teamName, uid, email, phone });
+      // Save to Firebase (example)
+      // firebase.database().ref('teams').push({ game, teamName, uid, email, phone });
 
       alert("Thank you! Your team has been registered.");
     }
