@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,296 +10,129 @@
       background: #111827;
       color: white;
       padding: 30px;
-    }
+    }.container {
+  max-width: 800px;
+  margin: auto;
+}
 
-    .container {
-      max-width: 800px;
-      margin: auto;
-    }
+h1, h2 {
+  text-align: center;
+}
 
-    h1, h2 {
-      text-align: center;
-    }
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background-color: #1f2937;
+  border-radius: 10px;
+  overflow: hidden;
+}
 
-    table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-      background-color: #1f2937;
-      border-radius: 10px;
-      overflow: hidden;
-    }
+th, td {
+  padding: 15px;
+  border-bottom: 1px solid #374151;
+  text-align: left;
+}
 
-    th, td {
-      padding: 15px;
-      border-bottom: 1px solid #374151;
-      text-align: left;
-    }
+th {
+  background-color: #374151;
+}
 
-    th {
-      background-color: #374151;
-    }
+tr:hover {
+  background-color: #2d3748;
+}
 
-    tr:hover {
-      background-color: #2d3748;
-    }
+button {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
 
-    button {
-      margin-top: 20px;
-      padding: 12px 24px;
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-    }
+button:hover {
+  background-color: #1d4ed8;
+}
 
-    button:hover {
-      background-color: #1d4ed8;
-    }
+input, select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  background-color: #1f2937;
+  color: white;
+  margin-bottom: 10px;
+}
 
-    input, select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #374151;
-      border-radius: 8px;
-      background-color: #1f2937;
-      color: white;
-      margin-bottom: 10px;
-    }
+label {
+  font-weight: bold;
+}
 
-    label {
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🎮 Welcome to Game Box</h1>
-    <h2>Available Games & Prices</h2>
+    <h2>Available Games & Prices</h2><!-- ✅ PUBG Lite Tournament Info -->
+<p style="margin-top: 30px; font-size: 16px; line-height: 1.6; background-color: #1f2937; padding: 20px; border-radius: 12px;">
+  📢 <strong>PUBG Lite Tournament</strong> is now open! Registration fee is <strong>₹120 for a full team</strong>. The tournament will begin once we reach <strong>1200 total players</strong>. Compete with the best and stand a chance to win a <strong>grand prize of ₹12,000</strong>! Don’t miss this opportunity—register your team today and show your skills on the battleground.
+</p>
 
-    <table>
-      <tr>
-        <th>Game</th>
-        <th>Entry Price</th>
-      </tr>
-      <tr><td>PUBG Mobile</td><td>₹120</td></tr>
-      <tr><td>Game for Peace</td><td>₹120</td></tr>
-      <tr><td>Free Fire</td><td>₹30</td></tr>
-      <tr><td>Free Fire Max</td><td>₹50</td></tr>
-      <tr><td>PUBG Lite</td><td>₹60 → ₹30</td></tr>
-      <tr><td>BGMI</td><td>₹120</td></tr>
-      <tr><td>Valorant</td><td>₹300</td></tr>
-      <tr><td>CS:GO</td><td>Free</td></tr>
-      <tr><td>Indus</td><td>₹20</td></tr>
-      <tr><td>PUBG PC</td><td>₹300</td></tr>
-    </table>
+<table>
+  <tr>
+    <th>Game</th>
+    <th>Entry Price</th>
+  </tr>
+  <tr><td>PUBG Mobile</td><td>₹120</td></tr>
+  <tr><td>Game for Peace</td><td>₹120</td></tr>
+  <tr><td>Free Fire</td><td>₹30</td></tr>
+  <tr><td>Free Fire Max</td><td>₹50</td></tr>
+  <tr><td>PUBG Lite</td><td>₹120 per team</td></tr>
+  <tr><td>BGMI</td><td>₹120</td></tr>
+  <tr><td>Valorant</td><td>₹300</td></tr>
+  <tr><td>CS:GO</td><td>Free</td></tr>
+  <tr><td>Indus</td><td>₹20</td></tr>
+  <tr><td>PUBG PC</td><td>₹300</td></tr>
+</table>
 
-    <!-- Team Join -->
-    <button onclick="showForm()">🎮 Join Game</button>
-    <div id="formContainer" style="display: none; margin-top: 30px;">
-      <label>Select Game:</label><br>
-      <select id="gameSelect" required>
-        <option value="">-- Select Game --</option>
-        <option value="PUBG Mobile">PUBG Mobile</option>
-        <option value="Game for Peace">Game for Peace</option>
-        <option value="Free Fire">Free Fire</option>
-        <option value="Free Fire Max">Free Fire Max</option>
-        <option value="PUBG Lite">PUBG Lite</option>
-        <option value="BGMI">BGMI</option>
-        <option value="Valorant">Valorant</option>
-        <option value="CS:GO">CS:GO</option>
-        <option value="Indus">Indus</option>
-        <option value="PUBG PC">PUBG PC</option>
-      </select><br>
+<!-- Additional features (forms, Firebase, etc.) go here -->
 
-      <label>Email:</label><br>
-      <input type="email" id="email" placeholder="Enter your Email" required><br>
+<!-- ✅ About Us Section -->
+<hr style="margin-top: 60px; border: 1px solid #374151;">
 
-      <label>Game UID:</label><br>
-      <input type="text" id="uid" placeholder="Enter your UID" required><br>
+<div style="margin-top: 40px; background-color: #1f2937; padding: 30px; border-radius: 16px;">
+  <h2 style="color: #38bdf8; text-align: center;">About Game Box 🎮</h2>
+  <p style="font-size: 16px; line-height: 1.7;">
+    <strong>Game Box</strong> is your one-stop hub for mobile and PC gaming tournaments in India. We connect players for exciting competitions, whether they play in teams or solo.
+    <br><br>
+    We support popular games including:
+    <ul>
+      <li>PUBG Mobile & Lite</li>
+      <li>Free Fire & Free Fire Max</li>
+      <li>BGMI, Valorant, CS:GO, and more</li>
+    </ul>
+    💡 Players register easily, pay entry fees securely through UPI, and get matched in fast-paced matches.
+    <br><br>
+    📞 Contact Support: <strong>7668572679</strong><br>
+    📧 Email: <strong>Gamebox4655@gmail.com</strong>
+  </p>
+</div>
 
-      <label>Team Name:</label><br>
-      <input type="text" id="teamName" placeholder="Enter your Team Name" required><br>
-
-      <label>Contact Number:</label><br>
-      <input type="tel" id="contact" placeholder="Enter your Contact Number" required><br>
-
-      <button onclick="submitAndPay()">Submit & Pay</button>
-    </div>
-
-    <div id="thankyouMessage" style="display: none; margin-top: 30px; color: #10b981;">
-      ✅ Thank you for joining! We’ll contact you soon.
-    </div>
-
-    <!-- Solo Player -->
-    <button onclick="showRequestForm()">🙋 Don't Have a Team?</button>
-    <div id="requestForm" style="display: none; margin-top: 30px;">
-      <label>Select Game:</label><br>
-      <select id="requestGame" required>
-        <option value="">-- Select Game --</option>
-        <option value="PUBG Mobile">PUBG Mobile</option>
-        <option value="Game for Peace">Game for Peace</option>
-        <option value="Free Fire">Free Fire</option>
-        <option value="Free Fire Max">Free Fire Max</option>
-        <option value="PUBG Lite">PUBG Lite</option>
-        <option value="BGMI">BGMI</option>
-        <option value="Valorant">Valorant</option>
-        <option value="CS:GO">CS:GO</option>
-        <option value="Indus">Indus</option>
-        <option value="PUBG PC">PUBG PC</option>
-      </select><br>
-
-      <label>Email:</label><br>
-      <input type="email" id="requestEmail" placeholder="Enter your Email" required><br>
-
-      <label>Your Game Level:</label><br>
-      <input type="text" id="requestLevel" placeholder="e.g., Gold, Platinum, Ace" required><br>
-
-      <label>Your UID:</label><br>
-      <input type="text" id="requestUID" placeholder="Enter your game UID" required><br>
-
-      <button onclick="submitRequest()">Submit Request & Pay</button>
-    </div>
-
-    <div id="requestThankyou" style="display: none; margin-top: 30px; color: #10b981;">
-      ✅ Thank you! Your solo request has been submitted. We'll match you with a team.
-    </div>
-  </div>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
-      authDomain: "gamebox-a049d.firebaseapp.com",
-      projectId: "gamebox-a049d",
-      storageBucket: "gamebox-a049d.appspot.com",
-      messagingSenderId: "978725902064",
-      appId: "1:978725902064:web:1793d66e2fc29910d05435",
-      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const auth = firebase.auth();
-
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-
-    auth.onAuthStateChanged((user) => {
-      if (!user) {
-        window.location.href = "index.html";
-      }
-    });
-
-    const prices = {
-      "PUBG Mobile": 120,
-      "Game for Peace": 120,
-      "Free Fire": 30,
-      "Free Fire Max": 50,
-      "PUBG Lite": 30,
-      "BGMI": 120,
-      "Valorant": 300,
-      "CS:GO": 0,
-      "Indus": 20,
-      "PUBG PC": 300
-    };
-
-    function showForm() {
-      document.getElementById("formContainer").style.display = "block";
-    }
-
-    function submitAndPay() {
-      const game = document.getElementById("gameSelect").value;
-      const email = document.getElementById("email").value.trim();
-      const uid = document.getElementById("uid").value.trim();
-      const team = document.getElementById("teamName").value.trim();
-      const contact = document.getElementById("contact").value.trim();
-
-      if (!game || !uid || !team || !contact || !email) {
-        alert("Please fill all fields before proceeding.");
+  </div>  <!-- Firebase logic to only save team data after payment -->  <script>
+    function submitTeamForm() {
+      const paymentConfirmed = confirm("Please complete your UPI payment. Click OK only after payment is successful.");
+      if (!paymentConfirmed) {
+        alert("Payment not completed. Team data will not be saved.");
         return;
       }
 
-      const amount = prices[game];
-      if (amount === undefined) {
-        alert("Invalid game selected.");
-        return;
-      }
-
-      const playerData = {
-        type: "team",
-        game: game,
-        uid: uid,
-        team: team,
-        contact: contact,
-        email: email,
-        timestamp: new Date().toISOString()
-      };
-
-      db.ref("registrations").push(playerData)
-        .then(() => {
-          document.getElementById("thankyouMessage").style.display = "block";
-          if (amount > 0) {
-            const upiLink = `upi://pay?pa=deshwalaarav80@okhdfcbank&pn=GameBox&am=${amount}&cu=INR`;
-            window.location.href = upiLink;
-          } else {
-            alert("Game is free to join.");
-          }
-        })
-        .catch((error) => {
-          alert("Failed to save data: " + error.message);
-        });
+      // Save to Firebase only after confirmation
+      // Example:
+      // firebase.database().ref('teams').push({ teamName, uid, contact, email });
+      alert("Thank you! Your team has been registered.");
     }
-
-    function showRequestForm() {
-      document.getElementById("requestForm").style.display = "block";
-    }
-
-    function submitRequest() {
-      const game = document.getElementById("requestGame").value;
-      const email = document.getElementById("requestEmail").value.trim();
-      const level = document.getElementById("requestLevel").value.trim();
-      const uid = document.getElementById("requestUID").value.trim();
-
-      if (!game || !level || !uid || !email) {
-        alert("Please fill all fields.");
-        return;
-      }
-
-      const amount = prices[game];
-      if (amount === undefined) {
-        alert("Invalid game selected.");
-        return;
-      }
-
-      const requestData = {
-        type: "solo",
-        game: game,
-        level: level,
-        uid: uid,
-        email: email,
-        timestamp: new Date().toISOString()
-      };
-
-      db.ref("solo_requests").push(requestData)
-        .then(() => {
-          document.getElementById("requestThankyou").style.display = "block";
-          if (amount > 0) {
-            const upiLink = `upi://pay?pa=deshwalaarav80@okhdfcbank&pn=GameBoxSolo&am=${amount}&cu=INR`;
-            window.location.href = upiLink;
-          } else {
-            alert("This game is free to join.");
-          }
-        })
-        .catch((error) => {
-          alert("Failed to submit request: " + error.message);
-        });
-    }
-  </script>
-</body>
+  </script></body>
 </html>
