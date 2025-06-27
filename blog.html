@@ -7,16 +7,12 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: url('file-AkTWbzdGmdVjzSqLUPtfmV') no-repeat center center fixed;
-      background-size: cover;
+      background: #111827;
       color: white;
       padding: 30px;
     }.container {
   max-width: 800px;
   margin: auto;
-  background-color: rgba(17, 24, 39, 0.85);
-  padding: 20px;
-  border-radius: 12px;
 }
 
 h1, h2 {
@@ -75,23 +71,12 @@ label {
   font-weight: bold;
 }
 
-form {
-  margin-top: 30px;
-  background-color: #1f2937;
-  padding: 20px;
-  border-radius: 12px;
-}
-
   </style>
-  <!-- Firebase Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 </head>
 <body>
   <div class="container">
     <h1>🎮 Welcome to Game Box</h1>
-    <h2>Available Games & Prices</h2><!-- ✅ PUBG Lite Tournament Info -->
-<p style="margin-top: 30px; font-size: 16px; line-height: 1.6; background-color: #1f2937; padding: 20px; border-radius: 12px;">
+    <h2>Available Games & Prices</h2><p style="margin-top: 30px; font-size: 16px; line-height: 1.6; background-color: #1f2937; padding: 20px; border-radius: 12px;">
   📢 <strong>PUBG Lite Tournament</strong> is now open! Registration fee is <strong>₹120 for a full team</strong>. The tournament will begin once we reach <strong>1200 total players</strong>. Compete with the best and stand a chance to win a <strong>grand prize of ₹12,000</strong>! Don’t miss this opportunity—register your team today and show your skills on the battleground.
 </p>
 
@@ -112,39 +97,40 @@ form {
   <tr><td>PUBG PC</td><td>₹300</td></tr>
 </table>
 
-<!-- ✅ Team Registration Form -->
-<form id="teamForm">
-  <h2>Join a Tournament</h2>
-  <label for="game">Select Game</label>
-  <select id="game" required onchange="updatePrice()">
-    <option value="PUBG Mobile">PUBG Mobile - ₹120</option>
-    <option value="Game for Peace">Game for Peace - ₹120</option>
-    <option value="Free Fire">Free Fire - ₹30</option>
-    <option value="Free Fire Max">Free Fire Max - ₹50</option>
-    <option value="PUBG Lite">PUBG Lite - ₹120</option>
-    <option value="BGMI">BGMI - ₹120</option>
-    <option value="Valorant">Valorant - ₹300</option>
-    <option value="CS:GO">CS:GO - Free</option>
-    <option value="Indus">Indus - ₹20</option>
-    <option value="PUBG PC">PUBG PC - ₹300</option>
-  </select>
+<label for="game">Select Game</label>
+<select id="game">
+  <option value="PUBG Mobile">PUBG Mobile</option>
+  <option value="Game for Peace">Game for Peace</option>
+  <option value="Free Fire">Free Fire</option>
+  <option value="Free Fire Max">Free Fire Max</option>
+  <option value="PUBG Lite">PUBG Lite</option>
+  <option value="BGMI">BGMI</option>
+  <option value="Valorant">Valorant</option>
+  <option value="CS:GO">CS:GO</option>
+  <option value="Indus">Indus</option>
+  <option value="PUBG PC">PUBG PC</option>
+</select>
 
-  <label for="teamName">Team Name</label>
-  <input type="text" id="teamName" required />
+<label for="teamName">Team Name</label>
+<input type="text" id="teamName" placeholder="Enter your team name">
 
-  <label for="uid">Player UID</label>
-  <input type="text" id="uid" required />
+<label for="uid">UID</label>
+<input type="text" id="uid" placeholder="Enter your UID">
 
-  <label for="email">Email</label>
-  <input type="email" id="email" required />
+<label for="email">Email</label>
+<input type="email" id="email" placeholder="Enter your email">
 
-  <label for="phone">Phone Number</label>
-  <input type="tel" id="phone" required />
+<label for="phone">Phone Number</label>
+<input type="tel" id="phone" placeholder="Enter your phone number">
 
-  <button type="button" id="submitBtn" onclick="submitTeamForm()">Submit & Pay ₹120</button>
-</form>
+<label for="coupon">Coupon Code (optional)</label>
+<input type="text" id="couponCode" placeholder="Enter coupon code">
+<p id="postpayNote" style="display: none; color: #fbbf24; margin-top: 5px;">
+  You need to pay after the tournament.
+</p>
 
-<!-- ✅ About Us Section -->
+<button onclick="submitForm()">Submit and Pay</button>
+
 <hr style="margin-top: 60px; border: 1px solid #374151;">
 
 <div style="margin-top: 40px; background-color: #1f2937; padding: 30px; border-radius: 16px;">
@@ -165,8 +151,7 @@ form {
   </p>
 </div>
 
-  </div>  <script>
-    // Firebase Init
+  </div>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
       authDomain: "gamebox-a049d.firebaseapp.com",
@@ -176,57 +161,67 @@ form {
       messagingSenderId: "978725902064",
       appId: "1:978725902064:web:1793d66e2fc29910d05435"
     };
+
     firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
 
-    const gamePrices = {
-      "PUBG Mobile": 120,
-      "Game for Peace": 120,
-      "Free Fire": 30,
-      "Free Fire Max": 50,
-      "PUBG Lite": 120,
-      "BGMI": 120,
-      "Valorant": 300,
-      "CS:GO": 0,
-      "Indus": 20,
-      "PUBG PC": 300
-    };
-
-    function updatePrice() {
-      const game = document.getElementById('game').value;
-      const price = gamePrices[game] || 0;
-      const button = document.getElementById('submitBtn');
-      button.textContent = price > 0 ? `Submit & Pay ₹${price}` : 'Submit (Free)';
+    function getGamePrice(game) {
+      switch (game) {
+        case "PUBG Mobile": return 120;
+        case "Game for Peace": return 120;
+        case "Free Fire": return 30;
+        case "Free Fire Max": return 50;
+        case "PUBG Lite": return 120;
+        case "BGMI": return 120;
+        case "Valorant": return 300;
+        case "CS:GO": return 0;
+        case "Indus": return 20;
+        case "PUBG PC": return 300;
+        default: return 0;
+      }
     }
 
-    function submitTeamForm() {
-      const game = document.getElementById('game').value;
-      const teamName = document.getElementById('teamName').value;
-      const uid = document.getElementById('uid').value;
-      const email = document.getElementById('email').value;
-      const phone = document.getElementById('phone').value;
-      const price = gamePrices[game] || 0;
+    function submitForm() {
+      const selectedGame = document.getElementById("game").value;
+      const teamName = document.getElementById("teamName").value;
+      const uid = document.getElementById("uid").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const couponCode = document.getElementById("couponCode").value.trim();
 
-      if (price > 0) {
-        const upiLink = `upi://pay?pa=deshwalaarav80@okhdfcbank&pn=GameBox&cu=INR&am=${price}`;
-        window.location.href = upiLink;
+      const price = getGamePrice(selectedGame);
 
-        const paymentConfirmed = confirm(`Did you complete your UPI payment of ₹${price}? Click OK to confirm.`);
-        if (!paymentConfirmed) {
-          alert("Payment not completed. Team data will not be saved.");
-          return;
-        }
-      }
-
-      database.ref('teams').push({
-        game,
+      const teamData = {
+        game: selectedGame,
         teamName,
         uid,
         email,
         phone
-      });
+      };
 
-      alert("Thank you! Your team has been registered.");
+      if (selectedGame === "CS:GO") {
+        saveToFirebase(teamData);
+        alert("Registered successfully (Free Entry for CS:GO)");
+        return;
+      }
+
+      if (selectedGame === "PUBG Lite" && couponCode === "E2025") {
+        document.getElementById("postpayNote").style.display = "block";
+        saveToFirebase(teamData);
+        alert("Registered successfully with coupon. You need to pay after the tournament.");
+        return;
+      }
+
+      const upiLink = `upi://pay?pa=deshwalaarav80@okhdfcbank&pn=GameBox&am=${price}&cu=INR`;
+      window.open(upiLink, '_blank');
+
+      setTimeout(() => {
+        saveToFirebase(teamData);
+        alert("Registration complete. Thank you!");
+      }, 10000);
+    }
+
+    function saveToFirebase(teamData) {
+      firebase.database().ref('teams').push(teamData);
     }
   </script></body>
 </html>
