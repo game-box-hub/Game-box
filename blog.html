@@ -1,227 +1,91 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Game Box - Blog</title>
+  <title>GameBox Missions</title>
   <style>
     body {
+      background-color: #1e1e1e;
+      color: #fff;
+      font-family: Arial, sans-serif;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #111827;
-      color: white;
-      padding: 30px;
-    }.container {
-  max-width: 800px;
-  margin: auto;
-}
-
-h1, h2 {
-  text-align: center;
-}
-
-table {
-  width: 100%;
-  margin-top: 20px;
-  border-collapse: collapse;
-  background-color: #1f2937;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-th, td {
-  padding: 15px;
-  border-bottom: 1px solid #374151;
-  text-align: left;
-}
-
-th {
-  background-color: #374151;
-}
-
-tr:hover {
-  background-color: #2d3748;
-}
-
-button {
-  margin-top: 20px;
-  padding: 12px 24px;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button:hover {
-  background-color: #1d4ed8;
-}
-
-input, select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #374151;
-  border-radius: 8px;
-  background-color: #1f2937;
-  color: white;
-  margin-bottom: 10px;
-}
-
-label {
-  font-weight: bold;
-}
-
+      padding: 0;
+    }
+    header {
+      background-color: #8b0000;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    .menu {
+      display: flex;
+      gap: 15px;
+    }
+    .menu a {
+      color: silver;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .content {
+      padding: 20px;
+    }
+    .missions {
+      margin-top: 20px;
+    }
+    .missions h2 {
+      color: red;
+    }
+    #ad-container {
+      margin-top: 30px;
+      padding: 15px;
+      background-color: #333;
+      border: 1px dashed red;
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎮 Welcome to Game Box</h1>
-    <h2>Available Games & Prices</h2><p style="margin-top: 30px; font-size: 16px; line-height: 1.6; background-color: #1f2937; padding: 20px; border-radius: 12px;">
-  📢 <strong>PUBG Lite Tournament</strong> is now open! Registration fee is <strong>₹120 for a full team</strong>. The tournament will begin once we reach <strong>1200 total players</strong>. Compete with the best and stand a chance to win a <strong>grand prize of ₹12,000</strong>! Don’t miss this opportunity—register your team today and show your skills on the battleground.
-</p>
+  <header>
+    <h1>GameBox</h1>
+    <div class="menu">
+      <a href="#">About Us</a>
+      <a href="#">Profile</a>
+      <a href="#">PUBG Lite News</a>
+    </div>
+  </header>
 
-<table>
-  <tr>
-    <th>Game</th>
-    <th>Entry Price</th>
-  </tr>
-  <tr><td>PUBG Mobile</td><td>₹120</td></tr>
-  <tr><td>Game for Peace</td><td>₹120</td></tr>
-  <tr><td>Free Fire</td><td>₹30</td></tr>
-  <tr><td>Free Fire Max</td><td>₹50</td></tr>
-  <tr><td>PUBG Lite</td><td>₹120 per team</td></tr>
-  <tr><td>BGMI</td><td>₹120</td></tr>
-  <tr><td>Valorant</td><td>₹300</td></tr>
-  <tr><td>CS:GO</td><td>Free</td></tr>
-  <tr><td>Indus</td><td>₹20</td></tr>
-  <tr><td>PUBG PC</td><td>₹300</td></tr>
-</table>
+  <div class="content">
+    <img src="your_pubg_lite_image.jpg" alt="PUBG Lite" width="100%" />
 
-<label for="game">Select Game</label>
-<select id="game">
-  <option value="PUBG Mobile">PUBG Mobile</option>
-  <option value="Game for Peace">Game for Peace</option>
-  <option value="Free Fire">Free Fire</option>
-  <option value="Free Fire Max">Free Fire Max</option>
-  <option value="PUBG Lite">PUBG Lite</option>
-  <option value="BGMI">BGMI</option>
-  <option value="Valorant">Valorant</option>
-  <option value="CS:GO">CS:GO</option>
-  <option value="Indus">Indus</option>
-  <option value="PUBG PC">PUBG PC</option>
-</select>
+    <div class="missions">
+      <h2>MISSIONS</h2>
+      <ul>
+        <li>Download PUBG Lite</li>
+        <li>Play 2 Matches – Earn ₹1-2</li>
+        <li>Watch 5 Ads Daily – Earn ₹5</li>
+        <li>Post Our Story – Get Extra ₹</li>
+        <li>Conqueror Rank – Earn ₹20</li>
+      </ul>
+    </div>
 
-<label for="teamName">Team Name</label>
-<input type="text" id="teamName" placeholder="Enter your team name">
+    <div id="ad-container">
+      <strong>Watch This Ad To Earn ₹1</strong>
+      <p>[Ad will appear here]</p>
+    </div>
+  </div>
 
-<label for="uid">UID</label>
-<input type="text" id="uid" placeholder="Enter your UID">
-
-<label for="email">Email</label>
-<input type="email" id="email" placeholder="Enter your email">
-
-<label for="phone">Phone Number</label>
-<input type="tel" id="phone" placeholder="Enter your phone number">
-
-<label for="coupon">Coupon Code (optional)</label>
-<input type="text" id="couponCode" placeholder="Enter coupon code">
-<p id="postpayNote" style="display: none; color: #fbbf24; margin-top: 5px;">
-  You need to pay after the tournament.
-</p>
-
-<button onclick="submitForm()">Submit and Pay</button>
-
-<hr style="margin-top: 60px; border: 1px solid #374151;">
-
-<div style="margin-top: 40px; background-color: #1f2937; padding: 30px; border-radius: 16px;">
-  <h2 style="color: #38bdf8; text-align: center;">About Game Box 🎮</h2>
-  <p style="font-size: 16px; line-height: 1.7;">
-    <strong>Game Box</strong> is your one-stop hub for mobile and PC gaming tournaments in India. We connect players for exciting competitions, whether they play in teams or solo.
-    <br><br>
-    We support popular games including:
-    <ul>
-      <li>PUBG Mobile & Lite</li>
-      <li>Free Fire & Free Fire Max</li>
-      <li>BGMI, Valorant, CS:GO, and more</li>
-    </ul>
-    💡 Players register easily, pay entry fees securely through UPI, and get matched in fast-paced matches.
-    <br><br>
-    📞 Contact Support: <strong>7668572679</strong><br>
-    📧 Email: <strong>Gamebox4655@gmail.com</strong>
-  </p>
-</div>
-
-  </div>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
-      authDomain: "gamebox-a049d.firebaseapp.com",
-      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com",
-      projectId: "gamebox-a049d",
-      storageBucket: "gamebox-a049d.appspot.com",
-      messagingSenderId: "978725902064",
-      appId: "1:978725902064:web:1793d66e2fc29910d05435"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-
-    function getGamePrice(game) {
-      switch (game) {
-        case "PUBG Mobile": return 120;
-        case "Game for Peace": return 120;
-        case "Free Fire": return 30;
-        case "Free Fire Max": return 50;
-        case "PUBG Lite": return 120;
-        case "BGMI": return 120;
-        case "Valorant": return 300;
-        case "CS:GO": return 0;
-        case "Indus": return 20;
-        case "PUBG PC": return 300;
-        default: return 0;
-      }
-    }
-
-    function submitForm() {
-      const selectedGame = document.getElementById("game").value;
-      const teamName = document.getElementById("teamName").value;
-      const uid = document.getElementById("uid").value;
-      const email = document.getElementById("email").value;
-      const phone = document.getElementById("phone").value;
-      const couponCode = document.getElementById("couponCode").value.trim();
-
-      const price = getGamePrice(selectedGame);
-
-      const teamData = {
-        game: selectedGame,
-        teamName,
-        uid,
-        email,
-        phone
-      };
-
-      if (selectedGame === "CS:GO") {
-        saveToFirebase(teamData);
-        alert("Registered successfully (Free Entry for CS:GO)");
-        return;
-      }
-
-      if (selectedGame === "PUBG Lite" && couponCode === "E2025") {
-        document.getElementById("postpayNote").style.display = "block";
-        saveToFirebase(teamData);
-        alert("Registered successfully with coupon. You need to pay after the tournament.");
-        return;
-      }
-
-      const upiLink = `upi://pay?pa=deshwalaarav80@okhdfcbank&pn=GameBox&am=${price}&cu=INR`;
-      window.open(upiLink, '_blank');
-
-      setTimeout(() => {
-        saveToFirebase(teamData);
-        alert("Registration complete. Thank you!");
-      }, 10000);
-    }
-
-    function saveToFirebase(teamData) {
-      firebase.database().ref('teams').push(teamData);
-    }
-  </script></body>
+  <script>
+    // Show ad block after 2 minutes
+    setTimeout(() => {
+      document.getElementById("ad-container").style.display = "block";
+    }, 2 * 60 * 1000);
+  </script>
+</body>
 </html>
+      
