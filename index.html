@@ -1,96 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Game Box - Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameBox Hub</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: url('gamebox-background.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: black;
+      color: goldenrod;
+      overflow-x: hidden;
     }
-    .overlay {
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 40px;
-      border-radius: 15px;
-      width: 100%;
-      max-width: 400px;
-    }
+
     h1 {
       text-align: center;
+      font-size: 3rem;
+      margin-top: 50px;
+      text-shadow: 0 0 20px gold, 0 0 40px goldenrod;
+      animation: glow 2s infinite alternate;
     }
-    input, button {
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px goldenrod; }
+      to { text-shadow: 0 0 30px gold, 0 0 50px goldenrod; }
+    }
+
+    .copyright {
+      text-align: center;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .notification {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      color: goldenrod;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      animation: fadeIn 1s ease;
+      text-align: center;
+      padding: 20px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .notification button {
+      background: goldenrod;
+      border: none;
+      color: black;
+      font-weight: bold;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .notification button:hover {
+      background: gold;
+      transform: scale(1.1);
+    }
+
+    .container {
+      text-align: center;
+      padding: 50px 20px;
+      opacity: 0;
+      animation: fadeUp 2s ease forwards;
+      animation-delay: 2s;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 15px;
+      padding: 15px 25px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: black;
+      background: goldenrod;
       border: none;
       border-radius: 10px;
-      font-size: 16px;
-    }
-    button {
-      background-color: #1f2937;
-      color: white;
-      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: 0.4s;
+      box-shadow: 0 0 15px gold;
     }
-    button:hover {
-      background-color: #374151;
+
+    .btn:hover {
+      background: gold;
+      transform: scale(1.1);
+      box-shadow: 0 0 25px goldenrod;
     }
   </style>
 </head>
 <body>
-  <div class="overlay">
-    <h1>Login to Game Box</h1>
-    <form id="loginForm">
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <button type="submit">Login</button>
+  <h1>WELCOME TO GAMEBOX-HUB POWERED BY HGL</h1>
+  <div class="copyright">© HGL</div>
 
-      <p style="text-align: center; margin-top: 10px;">
-  Don’t have an account? <a href="signup.html" style="color: #00f0ff;">Sign up</a>
-      </p>
-    </form>
+  <!-- Privacy Notification -->
+  <div class="notification" id="notificationBox">
+    <h2>Privacy Policy</h2>
+    <p>All products you buy or sell through our platform must be in good condition. If you fail to make payments or attempt any fraud/scam, legal action can be taken against you.</p>
+    <div>
+      <button onclick="acceptPolicy()">Accept</button>
+      <button onclick="declinePolicy()">Decline</button>
+    </div>
   </div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <div class="container" id="mainContent">
+    <h2>About GameBox</h2>
+    <p>
+      GameBox-Hub is a professional eSports and gaming community powered by HGL. 
+      We specialize in organizing tournaments for players who are passionate about 
+      competitive gaming. Our mission is to provide a fair, exciting, and premium 
+      experience for gamers. We focus on connecting players, helping them showcase 
+      their skills, and building a strong competitive environment. With trust, 
+      dedication, and innovation, we aim to make GameBox-Hub one of the leading 
+      platforms for eSports in India and beyond.
+    </p>
+
+    <h2>Games We Support</h2>
+    <ul style="list-style:none; font-size:1.2rem;">
+      <li>1. PUBG MOBILE LITE</li>
+      <li>2. PUBG MOBILE</li>
+      <li>3. FREEFIRE</li>
+      <li>4. PUBG PC (Coming Soon)</li>
+    </ul>
+
+    <div>
+      <button class="btn">Organise Tournament</button>
+      <button class="btn">Join Tournament</button>
+      <button class="btn">Purchase or Sell ID / Products</button>
+      <button class="btn" onclick="contactUs()">Contact Us</button>
+    </div>
+  </div>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
-      authDomain: "gamebox-a049d.firebaseapp.com",
-      projectId: "gamebox-a049d",
-      storageBucket: "gamebox-a049d.appspot.com",
-      messagingSenderId: "978725902064",
-      appId: "1:978725902064:web:1793d66e2fc29910d05435"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          alert("✅ Login successful!");
-          window.location.href = "blog.html";
-        })
-        .catch((error) => {
-          alert("❌ Login failed: " + error.message);
-        });
-    });
+    function acceptPolicy() {
+      document.getElementById("notificationBox").style.display = "none";
+    }
+    function declinePolicy() {
+      alert("You declined the Privacy Policy. Redirecting...");
+      window.location.href = "https://www.google.com";
+    }
+    function contactUs() {
+      window.location.href = "mailto:gamebox4655@gmail.com";
+    }
   </script>
 </body>
 </html>
