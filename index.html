@@ -3,223 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GameBox Hub</title>
+  <title>GameBox Hub - Premium</title>
   <style>
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: #000;
-      color: #fff;
+      background: black;
+      color: white;
       overflow-x: hidden;
     }
-
-    /* Premium Welcome Animation */
-    .welcome {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    header {
       text-align: center;
-      font-size: 2em;
-      font-weight: bold;
-      text-transform: uppercase;
-      position: relative;
-      color: transparent;
-      -webkit-text-stroke: 2px gold;
+      padding: 60px 20px;
     }
-
-    .welcome::before {
-      content: "WELCOME TO GAMEBOX-HUB POWERED BY HGL ©";
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: conic-gradient(
-        from 0deg,
-        red,
-        gold,
-        cyan,
-        purple,
-        red
-      );
-      background-size: 200% 200%;
-      animation: swirl 6s linear infinite;
+    h1 {
+      font-size: 2.8rem;
+      font-weight: bold;
+      background: linear-gradient(270deg, gold, orange, red, purple, gold);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-size: 400% 400%;
+      animation: gradientMove 8s ease infinite;
     }
-
-    @keyframes swirl {
-      0% { background-position: 0% 0%; }
-      25% { background-position: 100% 0%; }
-      50% { background-position: 100% 100%; }
-      75% { background-position: 0% 100%; }
-      100% { background-position: 0% 0%; }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
-
-    /* Notification Popup */
-    .popup {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-      flex-direction: column;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .popup-content {
-      background: #111;
+    .notification {
+      background: rgba(20, 20, 20, 0.95);
       border: 2px solid gold;
+      border-radius: 10px;
       padding: 20px;
-      border-radius: 12px;
-      max-width: 400px;
-      animation: fadeIn 1s ease-in-out;
+      margin: 30px auto;
+      width: 80%;
+      max-width: 600px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
     }
-
-    .popup button {
-      margin: 10px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .accept {
-      background: gold;
-      color: black;
-    }
-
-    .decline {
-      background: red;
-      color: white;
-    }
-
-    @keyframes fadeIn {
-      from {opacity: 0; transform: scale(0.8);}
-      to {opacity: 1; transform: scale(1);}
-    }
-
-    /* Section Styling */
-    section {
-      padding: 50px 20px;
-      text-align: center;
-    }
-
-    h2 {
+    .notification h2 {
       color: gold;
-      margin-bottom: 20px;
-      font-size: 2em;
     }
-
-    p {
-      max-width: 700px;
-      margin: auto;
-      line-height: 1.8;
-      color: #ddd;
+    .btn-box {
+      text-align: center;
+      margin-top: 25px;
     }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      font-size: 1.2em;
-    }
-
-    ul li {
-      margin: 10px 0;
-      color: #ccc;
-    }
-
-    /* Buttons */
     .btn {
       display: inline-block;
-      margin: 15px;
-      padding: 12px 25px;
       background: gold;
       color: black;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 8px;
       font-weight: bold;
-      border-radius: 25px;
       text-decoration: none;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: 0.3s;
     }
-
     .btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 15px gold;
+      background: orange;
+      color: white;
+    }
+    footer {
+      text-align: center;
+      margin: 50px 0 20px;
+      font-size: 0.9rem;
+      color: gray;
     }
   </style>
+  <script>
+    function showPolicy() {
+      const agree = confirm("Privacy Policy:\n\nJo bhi product apko bechna hai ya kharidna hai vo good condition me hona chaiye. Agar aap pese nahi dete ya scam karte hain to aap par case ho sakta hai.\n\nDo you accept?");
+      if (!agree) {
+        window.location.href = "https://google.com";
+      }
+    }
+  </script>
 </head>
-<body>
+<body onload="showPolicy()">
+  <header>
+    <h1>WELCOME TO GAMEBOX-HUB<br>POWERED BY HGL</h1>
+  </header>
 
-  <!-- Welcome Animation -->
-  <div class="welcome"></div>
-
-  <!-- Privacy Policy Notification -->
-  <div class="popup" id="policyPopup">
-    <div class="popup-content">
-      <h3>Privacy Policy</h3>
-      <p>
-        Whatever product you buy or sell here will be in good condition. 
-        If you refuse to pay or try to scam, legal action may be taken against you.
-      </p>
-      <button class="accept" onclick="closePopup(true)">Accept</button>
-      <button class="decline" onclick="closePopup(false)">Decline</button>
-    </div>
-  </div>
-
-  <!-- About GameBox -->
-  <section>
+  <div class="notification">
     <h2>About GameBox</h2>
     <p>
-      GameBox is a professional tournament organizing team dedicated to creating competitive 
-      and fun experiences for gamers around the world. Our goal is to provide fair gameplay, 
-      exciting challenges, and opportunities for every gamer to showcase their skills. 
-      We work with multiple games including battle royale, mobile, and PC titles. 
-      With a strong commitment to fair play and premium hosting, we make sure every event 
-      feels like a world-class competition. Our players are our community, and we are here 
-      to make sure your gaming journey is unforgettable.
+      GameBox-Hub ek professional tournament organizing team hai jisme hum players ke liye 
+      fair aur exciting competitions organize karte hain. Hamara goal gaming ko promote karna 
+      aur har gamer ko ek nayi opportunity dena hai jahan vo apni skills dikhaye aur reward jeete. 
+      Hum PUBG Mobile Lite, PUBG Mobile, Free Fire jaise games ke tournaments host karte hain aur 
+      future me PUBG PC ke liye bhi tournaments launch karne wale hain. Hum transparency, fair play 
+      aur professionalism par believe karte hain. Har player ka data aur payment safe hota hai, aur 
+      jo bhi buy/sell karna chahta hai unke liye secure marketplace available hai. Hamara vision ek 
+      premium esports ecosystem create karna hai jo India ke gamers ko global stage tak le jaaye.
     </p>
-  </section>
+  </div>
 
-  <!-- Games List -->
-  <section>
-    <h2>Games We Support</h2>
-    <ul>
-      <li>1. PUBG MOBILE LITE</li>
-      <li>2. PUBG MOBILE</li>
-      <li>3. FREEFIRE</li>
-      <li>4. PUBG PC (Coming Soon)</li>
-    </ul>
-  </section>
-
-  <!-- Buttons -->
-  <section>
-    <a href="#" class="btn">Organize Tournament</a>
+  <section class="btn-box">
+    <a href="organisetournament.html" class="btn">Organize Tournament</a>
     <a href="#" class="btn">Join Tournament</a>
     <a href="#" class="btn">Purchase / Sell IDs or Products</a>
     <a href="mailto:gamebox4655@gmail.com" class="btn">Contact Us</a>
   </section>
 
-  <script>
-    // Show popup after welcome screen
-    window.onload = function() {
-      setTimeout(() => {
-        document.getElementById("policyPopup").style.display = "flex";
-      }, 3000); // show after 3 sec
-    };
-
-    function closePopup(accepted) {
-      if(accepted) {
-        document.getElementById("policyPopup").style.display = "none";
-      } else {
-        window.location.href = "https://google.com"; // kick out if declined
-      }
-    }
-  </script>
+  <footer>
+    © 2025 HGL. All Rights Reserved.
+  </footer>
 </body>
 </html>
