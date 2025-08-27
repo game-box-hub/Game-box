@@ -7,159 +7,218 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: "Poppins", sans-serif;
-      background: black;
-      color: goldenrod;
+      font-family: 'Poppins', sans-serif;
+      background: #000;
+      color: #fff;
       overflow-x: hidden;
     }
 
-    h1 {
-      text-align: center;
-      font-size: 3rem;
-      margin-top: 50px;
-      text-shadow: 0 0 20px gold, 0 0 40px goldenrod;
-      animation: glow 2s infinite alternate;
-    }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 10px goldenrod; }
-      to { text-shadow: 0 0 30px gold, 0 0 50px goldenrod; }
-    }
-
-    .copyright {
-      text-align: center;
-      font-size: 1rem;
-      margin-bottom: 20px;
-    }
-
-    .notification {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.95);
-      color: goldenrod;
+    /* Premium Welcome Animation */
+    .welcome {
+      height: 100vh;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 9999;
-      animation: fadeIn 1s ease;
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      text-transform: uppercase;
+      position: relative;
+      color: transparent;
+      -webkit-text-stroke: 2px gold;
+    }
+
+    .welcome::before {
+      content: "WELCOME TO GAMEBOX-HUB POWERED BY HGL ©";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: conic-gradient(
+        from 0deg,
+        red,
+        gold,
+        cyan,
+        purple,
+        red
+      );
+      background-size: 200% 200%;
+      animation: swirl 6s linear infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @keyframes swirl {
+      0% { background-position: 0% 0%; }
+      25% { background-position: 100% 0%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+
+    /* Notification Popup */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      flex-direction: column;
       text-align: center;
       padding: 20px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .popup-content {
+      background: #111;
+      border: 2px solid gold;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      animation: fadeIn 1s ease-in-out;
     }
 
-    .notification button {
-      background: goldenrod;
-      border: none;
-      color: black;
-      font-weight: bold;
-      padding: 10px 20px;
+    .popup button {
       margin: 10px;
+      padding: 10px 20px;
+      border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: 0.3s;
+      font-weight: bold;
     }
 
-    .notification button:hover {
+    .accept {
       background: gold;
-      transform: scale(1.1);
+      color: black;
     }
 
-    .container {
-      text-align: center;
+    .decline {
+      background: red;
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.8);}
+      to {opacity: 1; transform: scale(1);}
+    }
+
+    /* Section Styling */
+    section {
       padding: 50px 20px;
-      opacity: 0;
-      animation: fadeUp 2s ease forwards;
-      animation-delay: 2s;
+      text-align: center;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(50px); }
-      to { opacity: 1; transform: translateY(0); }
+    h2 {
+      color: gold;
+      margin-bottom: 20px;
+      font-size: 2em;
     }
 
+    p {
+      max-width: 700px;
+      margin: auto;
+      line-height: 1.8;
+      color: #ddd;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      font-size: 1.2em;
+    }
+
+    ul li {
+      margin: 10px 0;
+      color: #ccc;
+    }
+
+    /* Buttons */
     .btn {
       display: inline-block;
       margin: 15px;
-      padding: 15px 25px;
-      font-size: 1.1rem;
-      font-weight: bold;
+      padding: 12px 25px;
+      background: gold;
       color: black;
-      background: goldenrod;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.4s;
-      box-shadow: 0 0 15px gold;
+      font-weight: bold;
+      border-radius: 25px;
+      text-decoration: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .btn:hover {
-      background: gold;
       transform: scale(1.1);
-      box-shadow: 0 0 25px goldenrod;
+      box-shadow: 0 0 15px gold;
     }
   </style>
 </head>
 <body>
-  <h1>WELCOME TO GAMEBOX-HUB POWERED BY HGL</h1>
-  <div class="copyright">© HGL</div>
 
-  <!-- Privacy Notification -->
-  <div class="notification" id="notificationBox">
-    <h2>Privacy Policy</h2>
-    <p>All products you buy or sell through our platform must be in good condition. If you fail to make payments or attempt any fraud/scam, legal action can be taken against you.</p>
-    <div>
-      <button onclick="acceptPolicy()">Accept</button>
-      <button onclick="declinePolicy()">Decline</button>
+  <!-- Welcome Animation -->
+  <div class="welcome"></div>
+
+  <!-- Privacy Policy Notification -->
+  <div class="popup" id="policyPopup">
+    <div class="popup-content">
+      <h3>Privacy Policy</h3>
+      <p>
+        Whatever product you buy or sell here will be in good condition. 
+        If you refuse to pay or try to scam, legal action may be taken against you.
+      </p>
+      <button class="accept" onclick="closePopup(true)">Accept</button>
+      <button class="decline" onclick="closePopup(false)">Decline</button>
     </div>
   </div>
 
-  <div class="container" id="mainContent">
+  <!-- About GameBox -->
+  <section>
     <h2>About GameBox</h2>
     <p>
-      GameBox-Hub is a professional eSports and gaming community powered by HGL. 
-      We specialize in organizing tournaments for players who are passionate about 
-      competitive gaming. Our mission is to provide a fair, exciting, and premium 
-      experience for gamers. We focus on connecting players, helping them showcase 
-      their skills, and building a strong competitive environment. With trust, 
-      dedication, and innovation, we aim to make GameBox-Hub one of the leading 
-      platforms for eSports in India and beyond.
+      GameBox is a professional tournament organizing team dedicated to creating competitive 
+      and fun experiences for gamers around the world. Our goal is to provide fair gameplay, 
+      exciting challenges, and opportunities for every gamer to showcase their skills. 
+      We work with multiple games including battle royale, mobile, and PC titles. 
+      With a strong commitment to fair play and premium hosting, we make sure every event 
+      feels like a world-class competition. Our players are our community, and we are here 
+      to make sure your gaming journey is unforgettable.
     </p>
+  </section>
 
+  <!-- Games List -->
+  <section>
     <h2>Games We Support</h2>
-    <ul style="list-style:none; font-size:1.2rem;">
+    <ul>
       <li>1. PUBG MOBILE LITE</li>
       <li>2. PUBG MOBILE</li>
       <li>3. FREEFIRE</li>
       <li>4. PUBG PC (Coming Soon)</li>
     </ul>
+  </section>
 
-    <div>
-      <button class="btn">Organise Tournament</button>
-      <button class="btn">Join Tournament</button>
-      <button class="btn">Purchase or Sell ID / Products</button>
-      <button class="btn" onclick="contactUs()">Contact Us</button>
-    </div>
-  </div>
+  <!-- Buttons -->
+  <section>
+    <a href="#" class="btn">Organize Tournament</a>
+    <a href="#" class="btn">Join Tournament</a>
+    <a href="#" class="btn">Purchase / Sell IDs or Products</a>
+    <a href="mailto:gamebox4655@gmail.com" class="btn">Contact Us</a>
+  </section>
 
   <script>
-    function acceptPolicy() {
-      document.getElementById("notificationBox").style.display = "none";
-    }
-    function declinePolicy() {
-      alert("You declined the Privacy Policy. Redirecting...");
-      window.location.href = "https://www.google.com";
-    }
-    function contactUs() {
-      window.location.href = "mailto:gamebox4655@gmail.com";
+    // Show popup after welcome screen
+    window.onload = function() {
+      setTimeout(() => {
+        document.getElementById("policyPopup").style.display = "flex";
+      }, 3000); // show after 3 sec
+    };
+
+    function closePopup(accepted) {
+      if(accepted) {
+        document.getElementById("policyPopup").style.display = "none";
+      } else {
+        window.location.href = "https://google.com"; // kick out if declined
+      }
     }
   </script>
 </body>
