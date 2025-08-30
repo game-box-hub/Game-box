@@ -1,91 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GameBox Missions</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organize Tournament - GameBox Hub</title>
   <style>
     body {
-      background-color: #1e1e1e;
-      color: #fff;
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #0d0d0d;
+      color: white;
+      text-align: center;
+      padding: 30px;
     }
-    header {
-      background-color: #8b0000;
+    h1 {
+      color: gold;
+      margin-bottom: 20px;
+    }
+    .form-box {
+      background: #1a1a1a;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255,215,0,0.4);
+      max-width: 500px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin: 10px 0;
+      font-size: 1rem;
+    }
+    input[type="text"] {
       padding: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      width: 90%;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      margin-top: 10px;
     }
-    header h1 {
-      margin: 0;
-      font-size: 20px;
-    }
-    .menu {
-      display: flex;
-      gap: 15px;
-    }
-    .menu a {
-      color: silver;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .content {
-      padding: 20px;
-    }
-    .missions {
+    .btn {
       margin-top: 20px;
+      padding: 12px 24px;
+      background: gold;
+      color: black;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
     }
-    .missions h2 {
-      color: red;
+    .btn:hover {
+      background: orange;
+      color: white;
     }
-    #ad-container {
-      margin-top: 30px;
-      padding: 15px;
-      background-color: #333;
-      border: 1px dashed red;
+    .hidden {
       display: none;
+    }
+    .policy-box {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>GameBox</h1>
-    <div class="menu">
-      <a href="#">About Us</a>
-      <a href="#">Profile</a>
-      <a href="#">PUBG Lite News</a>
-    </div>
-  </header>
 
-  <div class="content">
-    <img src="your_pubg_lite_image.jpg" alt="PUBG Lite" width="100%" />
+  <!-- Step 1 -->
+  <div class="form-box" id="step1">
+    <h1>Thank You for Joining Us!</h1>
+    <p>Let's set up your tournament 🚀</p>
+    <button class="btn" onclick="nextStep(2)">Continue</button>
+  </div>
 
-    <div class="missions">
-      <h2>MISSIONS</h2>
-      <ul>
-        <li>Download PUBG Lite</li>
-        <li>Play 2 Matches – Earn ₹1-2</li>
-        <li>Watch 5 Ads Daily – Earn ₹5</li>
-        <li>Post Our Story – Get Extra ₹</li>
-        <li>Conqueror Rank – Earn ₹20</li>
-      </ul>
-    </div>
+  <!-- Step 2 -->
+  <div class="form-box hidden" id="step2">
+    <h1>Select Players Limit</h1>
+    <label><input type="radio" name="players" value="60"> 60 Players</label>
+    <label><input type="radio" name="players" value="120"> 120 Players</label>
+    <label><input type="radio" name="players" value="300"> 300 Players</label>
+    <label><input type="radio" name="players" value="540"> 540 Players</label>
+    <label><input type="radio" name="players" value="1200"> 1200 Players</label>
+    <button class="btn" onclick="nextStep(3)">Next</button>
+  </div>
 
-    <div id="ad-container">
-      <strong>Watch This Ad To Earn ₹1</strong>
-      <p>[Ad will appear here]</p>
+  <!-- Step 3 -->
+  <div class="form-box hidden" id="step3">
+    <h1>Enter Tournament Name</h1>
+    <input type="text" id="tournamentName" placeholder="Tournament Name">
+    <button class="btn" onclick="nextStep(4)">Next</button>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="form-box hidden" id="step4">
+    <h1>Select Game</h1>
+    <label><input type="radio" name="game" value="PUBG Mobile Lite"> PUBG Mobile Lite</label>
+    <label><input type="radio" name="game" value="BGMI / PUBG Mobile"> BGMI / PUBG Mobile</label>
+    <label><input type="radio" name="game" value="Free Fire"> Free Fire</label>
+    <button class="btn" onclick="nextStep(5)">Submit</button>
+  </div>
+
+  <!-- Step 5: Policy -->
+  <div class="form-box hidden" id="step5">
+    <h1>Policy Agreement</h1>
+    <div class="policy-box">
+      <p>⚠️ Remember: If your profit is more than ₹6000, then ₹2000 will be charged as our service fee.</p>
     </div>
+    <button class="btn" onclick="acceptPolicy()">Accept</button>
+    <button class="btn" style="background:red;color:white;" onclick="declinePolicy()">Decline</button>
+  </div>
+
+  <!-- Step 6: Success -->
+  <div class="form-box hidden" id="step6">
+    <h1 style="color:lime">✅ Thank You!</h1>
+    <p>Your tournament has been published successfully 🎉</p>
   </div>
 
   <script>
-    // Show ad block after 2 minutes
-    setTimeout(() => {
-      document.getElementById("ad-container").style.display = "block";
-    }, 2 * 60 * 1000);
+    function nextStep(step) {
+      document.querySelectorAll('.form-box').forEach(box => box.classList.add('hidden'));
+      document.getElementById('step' + step).classList.remove('hidden');
+    }
+
+    function acceptPolicy() {
+      nextStep(6);
+    }
+
+    function declinePolicy() {
+      alert("You declined the policy. Returning to start.");
+      nextStep(1); // Auto back to start
+    }
   </script>
 </body>
 </html>
-      
