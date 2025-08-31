@@ -3,187 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Purchase & Sell - GameBox Hub</title>
+  <title>Purchase / Sell</title>
   <style>
-    body {
-      background: black;
-      color: goldenrod;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    h1 {
-      margin-top: 30px;
-      font-size: 40px;
-      text-shadow: 0 0 10px goldenrod, 0 0 20px gold;
-    }
-    .btn {
-      display: inline-block;
-      padding: 15px 30px;
-      margin: 20px;
-      background: goldenrod;
-      color: black;
-      font-size: 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-      font-weight: bold;
-    }
-    .btn:hover {
-      background: gold;
-      transform: scale(1.05);
-    }
-    .form-box, .purchase-box {
-      display: none;
-      margin-top: 30px;
-      background: #111;
-      padding: 20px;
-      border-radius: 12px;
-      width: 85%;
-      margin-left: auto;
-      margin-right: auto;
-      box-shadow: 0 0 15px goldenrod;
-    }
-    input, select {
-      padding: 10px;
-      width: 80%;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-      font-size: 16px;
-    }
-    input[type="file"] {
-      color: white;
-    }
-    .submit-btn {
-      background: goldenrod;
-      color: black;
-      font-weight: bold;
-      padding: 12px 25px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .submit-btn:hover {
-      background: gold;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      padding: 12px;
-      border: 1px solid goldenrod;
-      text-align: center;
-    }
-    th {
-      background: goldenrod;
-      color: black;
-    }
-    td button {
-      padding: 8px 15px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      margin: 5px;
-    }
-    .view-btn {
-      background: goldenrod;
-      color: black;
-      font-weight: bold;
-    }
-    .buy-btn {
-      background: green;
-      color: white;
-      font-weight: bold;
-    }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, select, button { margin: 8px 0; padding: 6px; width: 100%; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    table, th, td { border: 1px solid #333; }
+    th, td { padding: 8px; text-align: center; }
+    th { background: #222; color: #fff; }
   </style>
 </head>
 <body>
-  <h1>Purchase & Sell</h1>
-  <button class="btn" onclick="showSell()">Sell</button>
-  <button class="btn" onclick="showPurchase()">Purchase</button>
+  <h2>Sell Your Account</h2>
 
-  <!-- SELL FORM -->
-  <div id="sellForm" class="form-box">
-    <h2>Sell Your Game ID</h2>
-    <form id="sell-id-form">
-      <input type="text" id="level" placeholder="Enter your ID Level" required><br>
-      <input type="text" id="uid" placeholder="Enter your UID" required><br>
-      <select id="game" required>
-        <option value="">Select Game</option>
-        <option value="PUBG Mobile / BGMI">PUBG Mobile / BGMI</option>
-        <option value="PUBG Lite">PUBG Lite</option>
-        <option value="Freefire">Freefire</option>
-      </select><br>
-      <input type="file" id="video" accept="video/*" required><br>
-      <input type="number" id="price" placeholder="Enter Price (₹)" required><br>
-      <button type="submit" class="submit-btn">Upload & Submit</button>
-    </form>
-  </div>
+  <label>Enter Your ID Level:</label>
+  <input type="text" id="level">
 
-  <!-- PURCHASE SECTION -->
-  <div id="purchaseBox" class="purchase-box">
-    <h2>Available Game IDs</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Game</th>
-          <th>UID</th>
-          <th>Level</th>
-          <th>Price</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="purchaseTable">
-        <!-- IDs will appear here -->
-      </tbody>
-    </table>
-  </div>
+  <label>Enter Your UID:</label>
+  <input type="text" id="playerID">
+
+  <label>Game Name:</label>
+  <select id="game">
+    <option value="">-- Select Game --</option>
+    <option value="PUBG Mobile / BGMI">PUBG Mobile / BGMI</option>
+    <option value="PUBG Lite">PUBG Lite</option>
+    <option value="Free Fire">Free Fire</option>
+  </select>
+
+  <button onclick="saveData()">Submit</button>
+
+  <h3>Saved Accounts</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>UID</th>
+        <th>Level</th>
+        <th>Game</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="dataTable"></tbody>
+  </table>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
   <script>
-    function showSell() {
-      document.getElementById("sellForm").style.display = "block";
-      document.getElementById("purchaseBox").style.display = "none";
-    }
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
+      authDomain: "gamebox-a049d.firebaseapp.com",
+      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com",
+      projectId: "gamebox-a049d",
+      storageBucket: "gamebox-a049d.firebasestorage.app",
+      messagingSenderId: "978725902064",
+      appId: "1:978725902064:web:1793d66e2fc29910d05435"
+    };
 
-    function showPurchase() {
-      document.getElementById("purchaseBox").style.display = "block";
-      document.getElementById("sellForm").style.display = "none";
-    }
+    // Init Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    // Handle Sell Form Submission
-    document.getElementById("sell-id-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      let level = document.getElementById("level").value;
-      let uid = document.getElementById("uid").value;
+    // Save Data
+    function saveData() {
+      let playerID = document.getElementById("playerID").value.trim();
+      let level = document.getElementById("level").value.trim();
       let game = document.getElementById("game").value;
-      let price = document.getElementById("price").value;
 
-      let table = document.getElementById("purchaseTable");
+      if (playerID && level && game) {
+        db.ref("accounts/").push({
+          playerID: playerID,
+          level: level,
+          game: game,
+          date: new Date().toLocaleString()
+        }).then(() => {
+          alert("✅ Account Saved Successfully!");
+          document.getElementById("playerID").value = "";
+          document.getElementById("level").value = "";
+          document.getElementById("game").value = "";
+        }).catch((err) => {
+          alert("❌ Error: " + err);
+        });
+      } else {
+        alert("⚠️ Please fill all fields!");
+      }
+    }
 
-      let row = `
-        <tr>
-          <td>${game}</td>
-          <td>${uid}</td>
-          <td>${level}</td>
-          <td>₹${price}</td>
-          <td>
-            <button class="view-btn" onclick="alert('Video Proof: Seller will share directly!')">View Video</button>
-            <button class="buy-btn" onclick="alert('Contact Admin to Buy This ID!')">Buy Now</button>
-          </td>
-        </tr>
-      `;
-
-      table.innerHTML += row;
-
-      alert("✅ Thank you! Your ID has been submitted successfully and listed for Purchase.");
-      document.getElementById("sell-id-form").reset();
-      showPurchase();
+    // Show Data in Table
+    const tableBody = document.getElementById("dataTable");
+    db.ref("accounts/").on("value", (snapshot) => {
+      tableBody.innerHTML = "";
+      snapshot.forEach(child => {
+        let data = child.val();
+        let row = `<tr>
+          <td>${data.playerID}</td>
+          <td>${data.level}</td>
+          <td>${data.game}</td>
+          <td>${data.date}</td>
+        </tr>`;
+        tableBody.innerHTML += row;
+      });
     });
   </script>
 </body>
