@@ -3,192 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GameBox | Sell or Purchase</title>
+  <title>GameBox Marketplace</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
     }
     header {
-      background: #232f3e;
-      padding: 15px;
-      text-align: center;
-      color: white;
-      font-size: 22px;
-      font-weight: bold;
+      background: #1e272e;
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .container {
-      max-width: 600px;
-      margin: 30px auto;
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    header h1 {
+      font-size: 20px;
     }
-    h2 {
-      margin-top: 0;
-      color: #111;
-      border-bottom: 2px solid #ff9900;
-      padding-bottom: 10px;
+    .menu {
+      position: relative;
     }
-    label {
-      display: block;
-      margin: 12px 0 6px;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #ff9900;
-      color: white;
-      font-size: 16px;
+    .menu-btn {
+      background: #fff;
+      color: #1e272e;
+      padding: 8px 15px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #e68a00;
-    }
-    .message {
-      display: none;
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 6px;
       font-weight: bold;
-      text-align: center;
     }
-    .success {
-      background: #d4edda;
-      color: #155724;
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: #fff;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+      border-radius: 8px;
+      overflow: hidden;
+      min-width: 150px;
     }
-    .error {
-      background: #f8d7da;
-      color: #721c24;
+    .dropdown a {
+      display: block;
+      padding: 12px 20px;
+      color: #1e272e;
+      text-decoration: none;
+      font-weight: 500;
     }
-    .loading {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #666;
+    .dropdown a:hover {
+      background: #dcdde1;
     }
   </style>
 </head>
 <body>
-  <header>GameBox Store</header>
+  <header>
+    <h1>GameBox Hub</h1>
+    <div class="menu">
+      <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
+      <div class="dropdown" id="dropdownMenu">
+        <a href="buy.html">Purchase</a>
+        <a href="sell.html">Sell</a>
+        <a href="signup.html">Sign In</a>
+      </div>
+    </div>
+  </header>
 
-  <div class="container">
-    <h2>Sell Your Gaming Account</h2>
-
-    <label>Enter Your ID:</label>
-    <input type="text" id="playerID" placeholder="Enter Player ID">
-
-    <label>Enter Your Level:</label>
-    <input type="text" id="level" placeholder="e.g. Level 55">
-
-    <label>Choose Game:</label>
-    <select id="game">
-      <option value="">-- Select Game --</option>
-      <option value="PUBG Mobile / BGMI">PUBG Mobile / BGMI</option>
-      <option value="PUBG Lite">PUBG Lite</option>
-      <option value="Free Fire">Free Fire</option>
-    </select>
-
-    <label>Upload Video Proof:</label>
-    <input type="file" id="videoFile" accept="video/*">
-
-    <button type="button" onclick="saveData()">Submit</button>
-
-    <div id="message" class="message"></div>
-    <div id="loading" class="loading"></div>
-  </div>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+  <main style="text-align:center; margin-top:100px;">
+    <h2>Welcome to GameBox Marketplace</h2>
+    <p>Select an option from the menu above to continue.</p>
+  </main>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
-      authDomain: "gamebox-a049d.firebaseapp.com",
-      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com",
-      projectId: "gamebox-a049d",
-      storageBucket: "gamebox-a049d.appspot.com",
-      messagingSenderId: "978725902064",
-      appId: "1:978725902064:web:1793d66e2fc29910d05435"
-    };
-    firebase.initializeApp(firebaseConfig);
-
-    const db = firebase.database();
-    const storage = firebase.storage();
-
-    async function saveData() {
-      let playerID = document.getElementById("playerID").value.trim();
-      let level = document.getElementById("level").value.trim();
-      let game = document.getElementById("game").value;
-      let file = document.getElementById("videoFile").files[0];
-      let messageBox = document.getElementById("message");
-      let loading = document.getElementById("loading");
-
-      // Reset messages
-      messageBox.style.display = "none";
-      loading.innerHTML = "";
-
-      if (!playerID || !level || !game || !file) {
-        showMessage("⚠️ Please fill all fields and upload a video!", "error");
-        return;
-      }
-
-      try {
-        loading.innerHTML = "⏳ Uploading... Please wait";
-
-        let fileName = "videos/" + Date.now() + "_" + file.name;
-        let storageRef = storage.ref(fileName);
-
-        // Upload file
-        await storageRef.put(file);
-        let videoURL = await storageRef.getDownloadURL();
-
-        // Save to DB
-        await db.ref("accounts/").push({
-          playerID: playerID,
-          level: level,
-          game: game,
-          video: videoURL,
-          date: new Date().toLocaleString()
-        });
-
-        showMessage("✅ Account & Video saved successfully!", "success");
-        loading.innerHTML = "";
-
-        // Reset form
-        document.getElementById("playerID").value = "";
-        document.getElementById("level").value = "";
-        document.getElementById("game").value = "";
-        document.getElementById("videoFile").value = "";
-
-      } catch (error) {
-        console.error(error);
-        showMessage("❌ Upload failed. Please try again.", "error");
-        loading.innerHTML = "";
-      }
+    function toggleMenu() {
+      const menu = document.getElementById("dropdownMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
     }
-
-    function showMessage(text, type) {
-      let messageBox = document.getElementById("message");
-      messageBox.innerHTML = text;
-      messageBox.className = "message " + type;
-      messageBox.style.display = "block";
+    // close dropdown on outside click
+    window.onclick = function(event) {
+      if (!event.target.matches('.menu-btn')) {
+        document.getElementById("dropdownMenu").style.display = "none";
+      }
     }
   </script>
 </body>
