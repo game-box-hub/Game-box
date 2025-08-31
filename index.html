@@ -3,109 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GameBox Hub - Premium</title>
+  <title>GameBox-Hub</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Poppins', sans-serif;
+      font-family: Arial, sans-serif;
       background: black;
-      color: white;
+      color: gold;
+      text-align: center;
       overflow-x: hidden;
     }
-    header {
-      text-align: center;
-      padding: 60px 20px;
-    }
     h1 {
-      font-size: 2.8rem;
-      font-weight: bold;
-      background: linear-gradient(270deg, gold, orange, red, purple, gold);
+      font-size: 2.5rem;
+      margin-top: 50px;
+      background: linear-gradient(270deg, red, gold, blue, green);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-size: 400% 400%;
-      animation: gradientMove 8s ease infinite;
+      animation: animate 6s linear infinite;
     }
-    @keyframes gradientMove {
+    @keyframes animate {
       0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
     }
     .notification {
-      background: rgba(20, 20, 20, 0.95);
+      background: rgba(20,20,20,0.95);
       border: 2px solid gold;
-      border-radius: 10px;
       padding: 20px;
-      margin: 30px auto;
+      border-radius: 10px;
       width: 80%;
-      max-width: 600px;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      margin: 20px auto;
+      font-size: 14px;
+      display: none;
     }
-    .notification h2 {
-      color: gold;
-    }
-    .btn-box {
-      text-align: center;
-      margin-top: 25px;
-    }
-    .btn {
-      display: inline-block;
+    button {
       background: gold;
       color: black;
-      padding: 12px 24px;
+      border: none;
+      padding: 12px 20px;
       margin: 10px;
       border-radius: 8px;
+      cursor: pointer;
       font-weight: bold;
-      text-decoration: none;
+      font-size: 14px;
       transition: 0.3s;
     }
-    .btn:hover {
-      background: orange;
-      color: white;
+    button:hover {
+      background: #ffcc00;
+      transform: scale(1.05);
     }
     footer {
-      text-align: center;
-      margin: 50px 0 20px;
-      font-size: 0.9rem;
+      margin-top: 40px;
+      font-size: 12px;
       color: gray;
     }
   </style>
-  <script>
-    function showPolicy() {
-      const agree = confirm("Privacy Policy:\n\nJo bhi product apko bechna hai ya kharidna hai vo good condition me hona chaiye. Agar aap pese nahi dete ya scam karte hain to aap par case ho sakta hai.\n\nDo you accept?");
-      if (!agree) {
-        window.location.href = "https://google.com";
-      }
-    }
-  </script>
 </head>
-<body onload="showPolicy()">
-  <header>
-    <h1>WELCOME TO GAMEBOX-HUB<br>POWERED BY HGL</h1>
-  </header>
+<body>
+  <h1>WELCOME TO GAMEBOX-HUB POWERED BY HGL</h1>
+  <footer>© 2025 HGL. All rights reserved.</footer>
 
-  <div class="notification">
-    <h2>About GameBox</h2>
-    <p>
-      GameBox-Hub ek professional tournament organizing team hai jisme hum players ke liye 
-      fair aur exciting competitions organize karte hain. Hamara goal gaming ko promote karna 
-      aur har gamer ko ek nayi opportunity dena hai jahan vo apni skills dikhaye aur reward jeete. 
-      Hum PUBG Mobile Lite, PUBG Mobile, Free Fire jaise games ke tournaments host karte hain aur 
-      future me PUBG PC ke liye bhi tournaments launch karne wale hain. Hum transparency, fair play 
-      aur professionalism par believe karte hain. Har player ka data aur payment safe hota hai, aur 
-      jo bhi buy/sell karna chahta hai unke liye secure marketplace available hai. Hamara vision ek 
-      premium esports ecosystem create karna hai jo India ke gamers ko global stage tak le jaaye.
-    </p>
+  <div id="notify" class="notification">
+    <h2>Privacy Policy</h2>
+    <p>All products sold or purchased here are in good condition. If you fail to pay or attempt any scam, legal action can be taken against you.</p>
+    <button onclick="acceptPolicy()">Accept</button>
+    <button onclick="declinePolicy()">Decline</button>
   </div>
 
-  <section class="btn-box">
-    <a href="blog.html" class="btn">Organize Tournament</a>
-    <a href="#" class="btn">Join Tournament</a>
-    <a href="#" class="btn">Purchase / Sell IDs or Products</a>
-    <a href="mailto:gamebox4655@gmail.com" class="btn">Contact Us</a>
-  </section>
+  <div id="mainContent" style="display:none;">
+    <h2>About GameBox</h2>
+    <p>
+      GameBox is a professional tournament organizing team.  
+      We focus on competitive gaming and provide players with opportunities to join and host tournaments.  
+      Our goal is to build a trusted platform where gamers can showcase their skills, compete fairly, and enjoy esports at the highest level.
+    </p>
 
-  <footer>
-    © 2025 HGL. All Rights Reserved.
-  </footer>
+    <h3>Our Games</h3>
+    <ul style="list-style:none; padding:0;">
+      <li>1. PUBG MOBILE LITE</li>
+      <li>2. PUBG MOBILE</li>
+      <li>3. FREEFIRE</li>
+      <li>4. PUBG PC (Coming Soon)</li>
+    </ul>
+
+    <button onclick="window.location.href='blog.html'">Organize Tournament</button>
+    <button>Join Tournament</button>
+    <button onclick="window.location.href='purchase.html'">Purchase or Sell ID / Products</button>
+    <button onclick="window.location.href='mailto:gamebox4655@gmail.com'">Contact Us</button>
+  </div>
+
+  <script>
+    // Show notification on load
+    window.onload = function() {
+      document.getElementById("notify").style.display = "block";
+    }
+    function acceptPolicy() {
+      document.getElementById("notify").style.display = "none";
+      document.getElementById("mainContent").style.display = "block";
+    }
+    function declinePolicy() {
+      alert("You declined the policy. Redirecting...");
+      window.location.href = "https://google.com";
+    }
+  </script>
 </body>
 </html>
