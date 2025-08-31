@@ -3,54 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sell Account</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    input, select, button { margin: 8px 0; padding: 6px; width: 100%; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    table, th, td { border: 1px solid #333; }
-    th, td { padding: 8px; text-align: center; }
-    th { background: #222; color: #fff; }
-    video { width: 150px; height: auto; }
-  </style>
+  <title>Purchase / Sell</title>
 </head>
 <body>
   <h2>Sell Your Account</h2>
+  
+  <label>Enter Your ID:</label><br>
+  <input type="text" id="playerID"><br><br>
 
-  <label>Enter Your ID Level:</label>
-  <input type="text" id="level">
+  <label>Enter Your Level:</label><br>
+  <input type="text" id="level"><br><br>
 
-  <label>Enter Your UID:</label>
-  <input type="text" id="playerID">
-
-  <label>Game Name:</label>
+  <label>Game Name:</label><br>
   <select id="game">
-    <option value="">-- Select Game --</option>
     <option value="PUBG Mobile / BGMI">PUBG Mobile / BGMI</option>
     <option value="PUBG Lite">PUBG Lite</option>
     <option value="Free Fire">Free Fire</option>
-  </select>
+  </select><br><br>
 
-  <label>Upload Video:</label>
-  <input type="file" id="videoFile" accept="video/*">
+  <label>Upload Video Proof:</label><br>
+  <input type="file" id="videoFile" accept="video/*"><br><br>
 
-  <button onclick="saveData()">Submit</button>
+  <!-- Fixed button -->
+  <button type="button" onclick="saveData()">Submit</button>
 
-  <h3>Saved Accounts</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>UID</th>
-        <th>Level</th>
-        <th>Game</th>
-        <th>Date</th>
-        <th>Video</th>
-      </tr>
-    </thead>
-    <tbody id="dataTable"></tbody>
-  </table>
-
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
@@ -66,66 +42,47 @@
       appId: "1:978725902064:web:1793d66e2fc29910d05435"
     };
 
-    // Init Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const storage = firebase.storage();
 
-    // Save Data
     async function saveData() {
-      let playerID = document.getElementById("playerID").value.trim();
-      let level = document.getElementById("level").value.trim();
+      let playerID = document.getElementById("playerID").value;
+      let level = document.getElementById("level").value;
       let game = document.getElementById("game").value;
       let file = document.getElementById("videoFile").files[0];
 
-      if (playerID && level && game && file) {
+      if (!playerID || !level || !file) {
+        alert("⚠️ Please fill all fields and upload a video!");
+        return;
+      }
+
+      try {
+        let fileName = "videos/" + Date.now() + "_" + file.name;
+        let storageRef = storage.ref(fileName);
+
         // Upload video
-        let fileName = Date.now() + "_" + file.name;
-        let storageRef = storage.ref("videos/" + fileName);
+        await storageRef.put(file);
+        console.log("✅ Video Uploaded:", fileName);
 
-        try {
-          await storageRef.put(file);
-          let videoURL = await storageRef.getDownloadURL();
+        let videoURL = await storageRef.getDownloadURL();
 
-          // Save to DB
-          await db.ref("accounts/").push({
-            playerID: playerID,
-            level: level,
-            game: game,
-            video: videoURL,
-            date: new Date().toLocaleString()
-          });
+        // Save data in DB
+        await db.ref("accounts/").push({
+          playerID: playerID,
+          level: level,
+          game: game,
+          video: videoURL,
+          date: new Date().toLocaleString()
+        });
 
-          alert("✅ Account & Video Saved!");
-          document.getElementById("playerID").value = "";
-          document.getElementById("level").value = "";
-          document.getElementById("game").value = "";
-          document.getElementById("videoFile").value = "";
+        alert("✅ Account & Video saved successfully!");
 
-        } catch (err) {
-          alert("❌ Upload Error: " + err);
-        }
-      } else {
-        alert("⚠️ Please fill all fields and upload video!");
+      } catch (error) {
+        console.error("❌ Error:", error);
+        alert("Upload failed. Please try again.");
       }
     }
-
-    // Show Data in Table
-    const tableBody = document.getElementById("dataTable");
-    db.ref("accounts/").on("value", (snapshot) => {
-      tableBody.innerHTML = "";
-      snapshot.forEach(child => {
-        let data = child.val();
-        let row = `<tr>
-          <td>${data.playerID}</td>
-          <td>${data.level}</td>
-          <td>${data.game}</td>
-          <td>${data.date}</td>
-          <td>${data.video ? `<video controls src="${data.video}"></video>` : "No Video"}</td>
-        </tr>`;
-        tableBody.innerHTML += row;
-      });
-    });
   </script>
 </body>
 </html>
