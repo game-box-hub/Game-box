@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buy IDs - GameBox</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f1f2f6;
+    }
+    header {
+      background: #2f3640;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+    }
+    .card h3 {
+      margin: 0;
+      color: #2f3640;
+    }
+    .card p {
+      color: #57606f;
+      margin: 8px 0;
+    }
+    .buy-btn {
+      display: block;
+      background: #e84118;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .buy-btn:hover {
+      background: #c23616;
+    }
+  </style>
+</head>
+<body>
+  <header>🔥 Buy Game IDs - GameBox</header>
+  <div class="container" id="products"></div>
+
+  <script>
+    // 🔥 Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
+      authDomain: "gamebox-a049d.firebaseapp.com",
+      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com",
+      projectId: "gamebox-a049d",
+      storageBucket: "gamebox-a049d.firebasestorage.app",
+      messagingSenderId: "978725902064",
+      appId: "1:978725902064:web:1793d66e2fc29910d05435"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // 🔥 Fetch Products from Firebase
+    const productContainer = document.getElementById("products");
+
+    db.ref("products").on("value", (snapshot) => {
+      productContainer.innerHTML = "";
+      snapshot.forEach((childSnapshot) => {
+        let data = childSnapshot.val();
+        let card = `
+          <div class="card">
+            <h3>${data.gameName}</h3>
+            <p><b>UID:</b> ${data.uid}</p>
+            <p><b>Level:</b> ${data.level}</p>
+            <p><b>Price:</b> ₹${data.price}</p>
+            <p><b>Description:</b> ${data.description}</p>
+            <a class="buy-btn" href="mailto:gamebox4655@gmail.com?subject=Buy%20Request&body=I%20want%20to%20buy%20ID%20UID:%20${data.uid}">Buy Now</a>
+          </div>
+        `;
+        productContainer.innerHTML += card;
+      });
+    });
+  </script>
+</body>
+</html>
