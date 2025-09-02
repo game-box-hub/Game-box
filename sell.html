@@ -4,180 +4,95 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sell Your Game ID - GameBox</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background: #111;
-      padding: 15px;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-
-    .container {
-      max-width: 450px;
-      margin: 30px auto;
-      background: rgba(255,255,255,0.05);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0px 8px 20px rgba(0,0,0,0.5);
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 24px;
-      color: #00ffcc;
-    }
-
-    label {
-      font-weight: bold;
-      display: block;
-      margin: 10px 0 5px;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-      font-size: 14px;
-    }
-
-    button {
-      background: #00ffcc;
-      border: none;
-      padding: 12px;
-      width: 100%;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background: #00ccaa;
-    }
-
-    /* Popup Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 10;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-    }
-
-    .modal-content {
-      background: #1c1c1c;
-      margin: 10% auto;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 400px;
-      text-align: center;
-      color: #fff;
-    }
-
-    .modal-content h3 {
-      margin-bottom: 15px;
-    }
-
-    .modal-content button {
-      margin-top: 10px;
-      background: #00ff99;
-    }
-
-    .modal-content a {
-      color: #00ccff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-gray-100 font-sans">
+  <div class="max-w-lg mx-auto mt-10 bg-white p-6 rounded-2xl shadow-lg">
+    <h1 class="text-2xl font-bold mb-4 text-center">Sell Your Game ID</h1>
+    
+    <form id="sellForm" class="space-y-4">
+      <div>
+        <label class="block font-medium">Level</label>
+        <input type="text" id="level" class="w-full border rounded-lg px-3 py-2" placeholder="Enter Level" required>
+      </div>
 
-<header>Sell Your Game ID</header>
+      <div>
+        <label class="block font-medium">UID</label>
+        <input type="text" id="uid" class="w-full border rounded-lg px-3 py-2" placeholder="Enter UID" required>
+      </div>
 
-<div class="container">
-  <h2>Fill Your ID Details</h2>
+      <div>
+        <label class="block font-medium">Game</label>
+        <select id="game" class="w-full border rounded-lg px-3 py-2" required>
+          <option value="">Select Game</option>
+          <option value="PUBG Mobile / BGMI">PUBG Mobile / BGMI</option>
+          <option value="PUBG Lite">PUBG Lite</option>
+          <option value="Free Fire">Free Fire</option>
+        </select>
+      </div>
 
-  <form id="sellForm">
-    <label for="level">Enter Your Level</label>
-    <input type="number" id="level" name="level" placeholder="e.g. 65" required>
+      <div>
+        <label class="block font-medium">Description</label>
+        <textarea id="description" class="w-full border rounded-lg px-3 py-2" placeholder="Enter Description"></textarea>
+      </div>
 
-    <label for="uid">Enter Your UID</label>
-    <input type="text" id="uid" name="uid" placeholder="e.g. 1234567890" required>
+      <div>
+        <label class="block font-medium">Contact No.</label>
+        <input type="text" id="contact" class="w-full border rounded-lg px-3 py-2" placeholder="Enter Contact Number" required>
+      </div>
 
-    <label for="game">Select Your Game</label>
-    <select id="game" name="game" required>
-      <option value="">-- Choose Game --</option>
-      <option value="pubg">PUBG Mobile / BGMI</option>
-      <option value="pubg_lite">PUBG Lite</option>
-      <option value="freefire">Free Fire</option>
-    </select>
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+        Submit for Sale
+      </button>
+    </form>
 
-    <label for="desc">Description</label>
-    <textarea id="desc" name="desc" rows="3" placeholder="Write about your ID..."></textarea>
-
-    <label for="contact">Contact No.</label>
-    <input type="tel" id="contact" name="contact" placeholder="e.g. +91-9876543210" required>
-
-    <button type="button" onclick="checkLogin()">Submit</button>
-  </form>
-</div>
-
-<!-- Modal -->
-<div class="modal" id="loginModal">
-  <div class="modal-content">
-    <h3>Sign in Required</h3>
-    <p>If you don’t sign in, your ID won’t be uploaded.</p>
-    <p>👉 Do you want to continue without sign in?</p>
-    <button onclick="goToSignup()">Sign in</button>
-    <br><br>
-    <button onclick="redirectToPurchase()">Continue without Sign in</button>
+    <p id="successMsg" class="text-green-600 text-center mt-4 hidden">Your ID has been submitted successfully!</p>
   </div>
-</div>
 
-<script>
-  function checkLogin() {
-    // yaha tum Firebase Authentication ka check lagana
-    let isLoggedIn = false; // dummy (Firebase ke saath replace karna)
+  <script type="module">
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
+      authDomain: "gamebox-a049d.firebaseapp.com",
+      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com",
+      projectId: "gamebox-a049d",
+      storageBucket: "gamebox-a049d.appspot.com",
+      messagingSenderId: "978725902064",
+      appId: "1:978725902064:web:1793d66e2fc29910d05435"
+    };
 
-    if (isLoggedIn) {
-      alert("✅ Your ID uploaded successfully!");
-      // yaha Firebase database me data save hoga
-      window.location.href = "purchase.html";
-    } else {
-      document.getElementById("loginModal").style.display = "block";
-    }
-  }
+    // Init Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
-  function goToSignup() {
-    window.location.href = "signup.html";
-  }
+    // Form Submit
+    document.getElementById("sellForm").addEventListener("submit", function(e) {
+      e.preventDefault();
 
-  function redirectToPurchase() {
-    window.location.href = "purchase.html";
-  }
+      const level = document.getElementById("level").value;
+      const uid = document.getElementById("uid").value;
+      const game = document.getElementById("game").value;
+      const description = document.getElementById("description").value;
+      const contact = document.getElementById("contact").value;
 
-  window.onclick = function(event) {
-    let modal = document.getElementById("loginModal");
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  }
-</script>
-
+      // Save to Firebase
+      const newRef = database.ref("sellIDs").push();
+      newRef.set({
+        level,
+        uid,
+        game,
+        description,
+        contact,
+        timestamp: new Date().toISOString()
+      }).then(() => {
+        document.getElementById("successMsg").classList.remove("hidden");
+        document.getElementById("sellForm").reset();
+      }).catch(err => {
+        alert("Error: " + err.message);
+      });
+    });
+  </script>
 </body>
 </html>
