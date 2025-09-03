@@ -3,133 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Organize Tournament - GameBox Hub</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: #0d0d0d;
-      color: white;
-      text-align: center;
-      padding: 30px;
-    }
-    h1 {
-      color: gold;
-      margin-bottom: 20px;
-    }
-    .form-box {
-      background: #1a1a1a;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(255,215,0,0.4);
-      max-width: 500px;
-      margin: auto;
-    }
-    label {
-      display: block;
-      margin: 10px 0;
-      font-size: 1rem;
-    }
-    input[type="text"] {
-      padding: 10px;
-      width: 90%;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-      margin-top: 10px;
-    }
-    .btn {
-      margin-top: 20px;
-      padding: 12px 24px;
-      background: gold;
-      color: black;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .btn:hover {
-      background: orange;
-      color: white;
-    }
-    .hidden {
-      display: none;
-    }
-    .policy-box {
-      background: #222;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
-    }
-  </style>
+  <title>Organise Tournament</title>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
 
-  <!-- Step 1 -->
-  <div class="form-box" id="step1">
-    <h1>Thank You for Joining Us!</h1>
-    <p>Let's set up your tournament 🚀</p>
-    <button class="btn" onclick="nextStep(2)">Continue</button>
-  </div>
+  <div class="bg-gray-800 shadow-lg rounded-xl p-8 w-full max-w-lg">
+    <h1 class="text-3xl font-bold text-center text-yellow-400 mb-6">Organise Tournament</h1>
 
-  <!-- Step 2 -->
-  <div class="form-box hidden" id="step2">
-    <h1>Select Players Limit</h1>
-    <label><input type="radio" name="players" value="60"> 60 Players</label>
-    <label><input type="radio" name="players" value="120"> 120 Players</label>
-    <label><input type="radio" name="players" value="300"> 300 Players</label>
-    <label><input type="radio" name="players" value="540"> 540 Players</label>
-    <label><input type="radio" name="players" value="1200"> 1200 Players</label>
-    <button class="btn" onclick="nextStep(3)">Next</button>
-  </div>
+    <form id="tournamentForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Tournament Name</label>
+        <input type="text" id="tournamentName" class="w-full px-3 py-2 rounded bg-gray-700 text-white" required>
+      </div>
 
-  <!-- Step 3 -->
-  <div class="form-box hidden" id="step3">
-    <h1>Enter Tournament Name</h1>
-    <input type="text" id="tournamentName" placeholder="Tournament Name">
-    <button class="btn" onclick="nextStep(4)">Next</button>
-  </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Game</label>
+        <select id="gameName" class="w-full px-3 py-2 rounded bg-gray-700 text-white" required>
+          <option value="PUBG Mobile">PUBG Mobile / BGMI</option>
+          <option value="PUBG Lite">PUBG Lite</option>
+          <option value="Free Fire">Free Fire</option>
+        </select>
+      </div>
 
-  <!-- Step 4 -->
-  <div class="form-box hidden" id="step4">
-    <h1>Select Game</h1>
-    <label><input type="radio" name="game" value="PUBG Mobile Lite"> PUBG Mobile Lite</label>
-    <label><input type="radio" name="game" value="BGMI / PUBG Mobile"> BGMI / PUBG Mobile</label>
-    <label><input type="radio" name="game" value="Free Fire"> Free Fire</label>
-    <button class="btn" onclick="nextStep(5)">Submit</button>
-  </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Players Limit</label>
+        <input type="number" id="playersLimit" class="w-full px-3 py-2 rounded bg-gray-700 text-white" min="2" required>
+      </div>
 
-  <!-- Step 5: Policy -->
-  <div class="form-box hidden" id="step5">
-    <h1>Policy Agreement</h1>
-    <div class="policy-box">
-      <p>⚠️ Remember: If your profit is more than ₹6000, then ₹2000 will be charged as our service fee.</p>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Team Slots</label>
+        <input type="number" id="teamSlots" class="w-full px-3 py-2 rounded bg-gray-700 text-white" min="1" required>
+        <p class="text-xs text-gray-400 mt-1">Example: 1, 2, 50, 1000 — jitna tumhe rakhna ho</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1">Organizer Contact</label>
+        <input type="text" id="organizerContact" class="w-full px-3 py-2 rounded bg-gray-700 text-white" required>
+      </div>
+
+      <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded transition">
+        Organise Now
+      </button>
+    </form>
+
+    <!-- Notification -->
+    <div id="notification" class="hidden mt-6 bg-green-600 text-white p-4 rounded-lg text-center font-semibold">
+      ✅ Thank you! Your tournament is organised successfully.
     </div>
-    <button class="btn" onclick="acceptPolicy()">Accept</button>
-    <button class="btn" style="background:red;color:white;" onclick="declinePolicy()">Decline</button>
-  </div>
-
-  <!-- Step 6: Success -->
-  <div class="form-box hidden" id="step6">
-    <h1 style="color:lime">✅ Thank You!</h1>
-    <p>Your tournament has been published successfully 🎉</p>
   </div>
 
   <script>
-    function nextStep(step) {
-      document.querySelectorAll('.form-box').forEach(box => box.classList.add('hidden'));
-      document.getElementById('step' + step).classList.remove('hidden');
-    }
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
+      authDomain: "gamebox-a049d.firebaseapp.com",
+      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com",
+      projectId: "gamebox-a049d",
+      storageBucket: "gamebox-a049d.firebasestorage.app",
+      messagingSenderId: "978725902064",
+      appId: "1:978725902064:web:1793d66e2fc29910d05435"
+    };
 
-    function acceptPolicy() {
-      nextStep(6);
-    }
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    function declinePolicy() {
-      alert("You declined the policy. Returning to start.");
-      nextStep(1); // Auto back to start
-    }
+    document.getElementById("tournamentForm").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const tournamentName = document.getElementById("tournamentName").value;
+      const gameName = document.getElementById("gameName").value;
+      const playersLimit = document.getElementById("playersLimit").value;
+      const teamSlots = document.getElementById("teamSlots").value;
+      const organizerContact = document.getElementById("organizerContact").value;
+
+      // Save to Firebase
+      db.ref("tournaments").push({
+        tournamentName,
+        gameName,
+        playersLimit,
+        teamSlots,
+        organizerContact,
+        timestamp: new Date().toISOString()
+      }).then(() => {
+        document.getElementById("notification").classList.remove("hidden");
+        document.getElementById("tournamentForm").reset();
+      }).catch((error) => {
+        alert("Error: " + error.message);
+      });
+    });
   </script>
+
 </body>
 </html>
