@@ -3,102 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Organise Tournament</title>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-
-  <!-- Tailwind CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <title>Organise Tournament | GameBox Hub</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: gold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #222;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px gold;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: gold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid gold;
+      border-radius: 8px;
+      background: #111;
+      color: gold;
+    }
+    button {
+      background: gold;
+      color: black;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.3s ease;
+    }
+    button:hover {
+      background: #fff200;
+    }
+    .notification {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background: #00b894;
+      color: white;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+  </style>
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+<body>
 
-  <div class="bg-gray-800 shadow-lg rounded-xl p-8 w-full max-w-lg">
-    <h1 class="text-3xl font-bold text-center text-yellow-400 mb-6">Organise Tournament</h1>
-
-    <form id="tournamentForm" class="space-y-4">
-      <div>
-        <label class="block text-sm font-semibold mb-1">Tournament Name</label>
-        <input type="text" id="tournamentName" class="w-full px-3 py-2 rounded bg-gray-700 text-white" required>
-      </div>
-
-      <div>
-        <label class="block text-sm font-semibold mb-1">Game</label>
-        <select id="gameName" class="w-full px-3 py-2 rounded bg-gray-700 text-white" required>
-          <option value="PUBG Mobile">PUBG Mobile / BGMI</option>
-          <option value="PUBG Lite">PUBG Lite</option>
-          <option value="Free Fire">Free Fire</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-sm font-semibold mb-1">Players Limit</label>
-        <input type="number" id="playersLimit" class="w-full px-3 py-2 rounded bg-gray-700 text-white" min="2" required>
-      </div>
-
-      <div>
-        <label class="block text-sm font-semibold mb-1">Team Slots</label>
-        <input type="number" id="teamSlots" class="w-full px-3 py-2 rounded bg-gray-700 text-white" min="1" required>
-        <p class="text-xs text-gray-400 mt-1">Example: 1, 2, 50, 1000 — jitna tumhe rakhna ho</p>
-      </div>
-
-      <div>
-        <label class="block text-sm font-semibold mb-1">Organizer Contact</label>
-        <input type="text" id="organizerContact" class="w-full px-3 py-2 rounded bg-gray-700 text-white" required>
-      </div>
-
-      <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded transition">
-        Organise Now
-      </button>
+  <div class="card">
+    <h2>Organise Tournament</h2>
+    <form id="tournamentForm">
+      <input type="text" id="tournamentName" placeholder="Tournament Name" required>
+      <select id="gameName" required>
+        <option value="">Select Game</option>
+        <option>PUBG Mobile / BGMI</option>
+        <option>PUBG Lite</option>
+        <option>Free Fire</option>
+      </select>
+      <input type="number" id="playersLimit" placeholder="Players Limit e.g. 100" min="2" required>
+      <input type="number" id="teamSlots" placeholder="Team Slots e.g. 50" min="1" required>
+      <input type="text" id="organizerContact" placeholder="Your Contact No." required>
+      <button type="submit">Organise Now</button>
     </form>
-
-    <!-- Notification -->
-    <div id="notification" class="hidden mt-6 bg-green-600 text-white p-4 rounded-lg text-center font-semibold">
+    <div id="notification" class="notification">
       ✅ Thank you! Your tournament is organised successfully.
     </div>
   </div>
 
   <script>
-    // Firebase Config
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
       authDomain: "gamebox-a049d.firebaseapp.com",
-      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com",
+      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com/",
       projectId: "gamebox-a049d",
-      storageBucket: "gamebox-a049d.firebasestorage.app",
+      storageBucket: "gamebox-a049d.appspot.com",
       messagingSenderId: "978725902064",
       appId: "1:978725902064:web:1793d66e2fc29910d05435"
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    document.getElementById("tournamentForm").addEventListener("submit", function(e){
+    // Handle the form submission
+    document.getElementById("tournamentForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
-      const tournamentName = document.getElementById("tournamentName").value;
-      const gameName = document.getElementById("gameName").value;
-      const playersLimit = document.getElementById("playersLimit").value;
-      const teamSlots = document.getElementById("teamSlots").value;
-      const organizerContact = document.getElementById("organizerContact").value;
+      const tourName = document.getElementById("tournamentName").value.trim();
+      const game = document.getElementById("gameName").value;
+      const players = document.getElementById("playersLimit").value;
+      const slots = document.getElementById("teamSlots").value;
+      const contact = document.getElementById("organizerContact").value.trim();
 
-      // Save to Firebase
-      db.ref("tournaments").push({
-        tournamentName,
-        gameName,
-        playersLimit,
-        teamSlots,
-        organizerContact,
+      const newRef = db.ref("tournaments").push();
+      newRef.set({
+        tournamentName: tourName,
+        gameName: game,
+        playersLimit: players,
+        teamSlots: slots,
+        organizerContact: contact,
         timestamp: new Date().toISOString()
       }).then(() => {
-        document.getElementById("notification").classList.remove("hidden");
+        document.getElementById("notification").style.display = "block";
         document.getElementById("tournamentForm").reset();
-      }).catch((error) => {
-        alert("Error: " + error.message);
+      }).catch(err => {
+        alert("Error saving data: " + err.message);
       });
     });
   </script>
-
 </body>
 </html>
