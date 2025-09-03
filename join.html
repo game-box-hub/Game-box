@@ -8,107 +8,90 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: black;
+      background: #000;
       color: gold;
       text-align: center;
     }
     h1 {
-      font-size: 2.5rem;
-      margin: 20px 0;
-      background: linear-gradient(270deg, red, gold, blue, green);
+      margin: 20px;
+      font-size: 2rem;
+      background: linear-gradient(90deg, red, gold, cyan, purple);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: animate 6s linear infinite;
     }
-    @keyframes animate {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
-    }
-    .card {
-      background: rgba(20, 20, 20, 0.95);
-      border: 2px solid gold;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 15px auto;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0px 0px 15px gold;
-      transition: 0.3s;
-    }
-    .card:hover {
-      transform: scale(1.03);
+    select, input {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 8px;
+      border: 1px solid gold;
+      outline: none;
+      font-size: 14px;
     }
     button {
       background: gold;
       color: black;
       border: none;
-      padding: 12px 20px;
+      padding: 10px 20px;
       margin: 10px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
-      font-size: 14px;
-      transition: 0.3s;
     }
     button:hover {
-      background: #ffcc00;
-      transform: scale(1.05);
+      background: orange;
     }
-    input {
-      padding: 10px;
-      margin: 8px;
-      border: 1px solid gold;
-      border-radius: 6px;
-      width: 80%;
-      background: black;
-      color: gold;
-    }
-    table {
+    .slot-table {
       margin: 20px auto;
+      width: 90%;
+      max-width: 800px;
       border-collapse: collapse;
-      width: 95%;
     }
-    table, th, td {
+    .slot-table th, .slot-table td {
       border: 1px solid gold;
+      padding: 8px;
+      font-size: 14px;
     }
-    th, td {
-      padding: 10px;
+    .slot-table th {
+      background: #111;
+    }
+    .slot {
+      background: #111;
     }
   </style>
 </head>
 <body>
   <h1>JOIN TOURNAMENT</h1>
 
-  <div id="tournamentList" class="card">
-    <h2>Available Tournaments</h2>
-    <div id="list"></div>
-  </div>
+  <!-- Tournament selector -->
+  <label>Select Tournament:</label>
+  <select id="tournamentSelect"></select>
+  <button onclick="loadSlots()">Load Slots</button>
 
-  <div id="joinForm" class="card" style="display:none;">
-    <h2 id="tournamentName"></h2>
-    <form id="joinTeamForm">
-      <input type="text" id="teamName" placeholder="Enter Team Name" required><br>
-      <input type="text" id="tournamentCode" placeholder="Enter Tournament Code" required><br>
-      <input type="text" id="uid1" placeholder="Player 1 UID" required><br>
-      <input type="text" id="uid2" placeholder="Player 2 UID" required><br>
-      <input type="text" id="uid3" placeholder="Player 3 UID" required><br>
-      <input type="text" id="uid4" placeholder="Player 4 UID" required><br>
-      <button type="submit">Join Tournament</button>
-    </form>
-  </div>
+  <!-- Table of slots -->
+  <table class="slot-table" id="slotsTable">
+    <thead>
+      <tr>
+        <th>Slot #</th>
+        <th>Team Name</th>
+        <th>UID 1</th>
+        <th>UID 2</th>
+        <th>UID 3</th>
+        <th>UID 4</th>
+        <th>Join Code</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="slotBody">
+      <!-- Slots will be generated dynamically -->
+    </tbody>
+  </table>
 
-  <div id="slotTable" class="card" style="display:none;">
-    <h3>Team Slots</h3>
-    <table id="slotsTable">
-      <tr><th>Slot</th><th>Team Name</th></tr>
-    </table>
-  </div>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
 
-  <script type="module">
+  <script>
     // Firebase Config
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-
     const firebaseConfig = {
       apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
       authDomain: "gamebox-a049d.firebaseapp.com",
@@ -119,77 +102,83 @@
       appId: "1:978725902064:web:1793d66e2fc29910d05435"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    const tournamentListDiv = document.getElementById("list");
-    const joinForm = document.getElementById("joinForm");
-    const slotsDiv = document.getElementById("slotTable");
-    const slotsTable = document.getElementById("slotsTable");
-    let currentTournamentId = null;
-    let totalSlots = 0;
+    const tournamentSelect = document.getElementById("tournamentSelect");
+    const slotBody = document.getElementById("slotBody");
+    let currentTournamentKey = "";
 
-    // Fetch tournaments from Firebase
-    onValue(ref(db, "tournaments"), (snapshot) => {
-      tournamentListDiv.innerHTML = "";
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        Object.keys(data).forEach(tId => {
-          const t = data[tId];
-          const btn = document.createElement("button");
-          btn.innerText = `${t.name} (${t.game})`;
-          btn.onclick = () => openTournament(tId, t);
-          tournamentListDiv.appendChild(btn);
-        });
-      } else {
-        tournamentListDiv.innerHTML = "<p>No tournaments available right now.</p>";
+    // Load tournaments into dropdown
+    firebase.database().ref("tournaments").on("value", snapshot => {
+      tournamentSelect.innerHTML = "";
+      snapshot.forEach(child => {
+        const option = document.createElement("option");
+        option.value = child.key;
+        option.textContent = child.val().tournamentName + " (" + child.val().gameName + ")";
+        tournamentSelect.appendChild(option);
+      });
+    });
+
+    // Load slots based on selected tournament
+    function loadSlots() {
+      currentTournamentKey = tournamentSelect.value;
+      if (!currentTournamentKey) return alert("Select a tournament first!");
+
+      firebase.database().ref("tournaments/" + currentTournamentKey).once("value", snap => {
+        const data = snap.val();
+        const totalSlots = data.teamSlots || 10; // default 10 slots
+        slotBody.innerHTML = "";
+
+        for (let i = 1; i <= totalSlots; i++) {
+          const row = document.createElement("tr");
+          row.classList.add("slot");
+          row.innerHTML = `
+            <td>${i}</td>
+            <td><input type="text" id="team${i}" placeholder="Team Name"></td>
+            <td><input type="text" id="uid1_${i}" placeholder="UID 1"></td>
+            <td><input type="text" id="uid2_${i}" placeholder="UID 2"></td>
+            <td><input type="text" id="uid3_${i}" placeholder="UID 3"></td>
+            <td><input type="text" id="uid4_${i}" placeholder="UID 4"></td>
+            <td><input type="text" id="join_${i}" placeholder="Join Code"></td>
+            <td><button onclick="joinSlot(${i})">Join</button></td>
+          `;
+          slotBody.appendChild(row);
+        }
+      });
+    }
+
+    // Save slot data to Firebase
+    function joinSlot(slotNum) {
+      const teamName = document.getElementById("team" + slotNum).value;
+      const uid1 = document.getElementById("uid1_" + slotNum).value;
+      const uid2 = document.getElementById("uid2_" + slotNum).value;
+      const uid3 = document.getElementById("uid3_" + slotNum).value;
+      const uid4 = document.getElementById("uid4_" + slotNum).value;
+      const joinCode = document.getElementById("join_" + slotNum).value;
+
+      if (!teamName || !uid1 || !uid2 || !uid3 || !uid4 || !joinCode) {
+        alert("Please fill all fields!");
+        return;
       }
-    });
 
-    function openTournament(tId, tournament) {
-      currentTournamentId = tId;
-      totalSlots = tournament.slots;
-      document.getElementById("tournamentName").innerText = tournament.name;
-      joinForm.style.display = "block";
-      slotsDiv.style.display = "block";
-      loadSlots(tId);
-    }
-
-    function loadSlots(tId) {
-      slotsTable.innerHTML = "<tr><th>Slot</th><th>Team Name</th></tr>";
-      onValue(ref(db, "tournaments/" + tId + "/teams"), (snapshot) => {
-        slotsTable.innerHTML = "<tr><th>Slot</th><th>Team Name</th></tr>";
-        if (snapshot.exists()) {
-          const teams = snapshot.val();
-          let slotCount = 1;
-          Object.keys(teams).forEach(key => {
-            const team = teams[key];
-            const row = `<tr><td>${slotCount}</td><td>${team.teamName}</td></tr>`;
-            slotsTable.innerHTML += row;
-            slotCount++;
-          });
-        }
-      });
-    }
-
-    document.getElementById("joinTeamForm").addEventListener("submit", function(e) {
-      e.preventDefault();
       const teamData = {
-        teamName: document.getElementById("teamName").value,
-        code: document.getElementById("tournamentCode").value,
-        members: {
-          uid1: document.getElementById("uid1").value,
-          uid2: document.getElementById("uid2").value,
-          uid3: document.getElementById("uid3").value,
-          uid4: document.getElementById("uid4").value
-        }
+        teamName,
+        uid1, uid2, uid3, uid4,
+        joinCode,
+        slotNum,
+        timestamp: new Date().toISOString()
       };
-      const teamRef = push(ref(db, "tournaments/" + currentTournamentId + "/teams"));
-      set(teamRef, teamData).then(() => {
-        alert("Thank you! Your team has joined successfully.");
-        document.getElementById("joinTeamForm").reset();
+
+      firebase.database().ref("tournaments/" + currentTournamentKey + "/teams/slot" + slotNum).set(teamData)
+      .then(() => {
+        alert("Team registered successfully in slot " + slotNum);
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error saving data!");
       });
-    });
+    }
   </script>
 </body>
 </html>
