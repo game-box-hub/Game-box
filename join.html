@@ -51,49 +51,57 @@
 
   <div id="slots"></div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-  <script>
-    // Firebase Config
+  <!-- Firebase Scripts -->
+  <script type="module">
+    // ✅ Import Firebase v9 Modular SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, get, push, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+    // ✅ Firebase Config (tere project ka)
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
+      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
       authDomain: "gamebox-a049d.firebaseapp.com",
       databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com/",
       projectId: "gamebox-a049d",
       storageBucket: "gamebox-a049d.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      messagingSenderId: "978725902064",
+      appId: "1:978725902064:web:1793d66e2fc29910d05435"
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    // ✅ Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
     let selectedTournament = "";
 
-    // Fetch tournaments
-    function loadTournaments() {
+    // ✅ Fetch tournaments
+    async function loadTournaments() {
       const tournamentList = document.getElementById("tournamentList");
-      db.ref("tournaments").once("value", (snapshot) => {
-        tournamentList.innerHTML = "";
+      const snapshot = await get(ref(db, "tournaments"));
+      tournamentList.innerHTML = "";
+
+      if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const option = document.createElement("option");
           option.value = child.key;
           option.textContent = child.val().tournamentName;
           tournamentList.appendChild(option);
         });
-        if (snapshot.exists()) {
-          document.getElementById("slotForm").style.display = "block";
-          selectedTournament = tournamentList.value;
-          showSlots(selectedTournament);
-        }
-      });
+        selectedTournament = tournamentList.value;
+        document.getElementById("slotForm").style.display = "block";
+        showSlots(selectedTournament);
+      } else {
+        tournamentList.innerHTML = "<option>No tournaments yet</option>";
+      }
     }
 
-    // Show slots for selected tournament
+    // ✅ Show slots for selected tournament
     function showSlots(tournamentId) {
       const slotsDiv = document.getElementById("slots");
       slotsDiv.innerHTML = "<h3>Registered Teams</h3>";
-      db.ref("tournaments/" + tournamentId + "/slots").on("value", (snapshot) => {
+
+      const slotsRef = ref(db, "tournaments/" + tournamentId + "/slots");
+      onValue(slotsRef, (snapshot) => {
         slotsDiv.innerHTML = "<h3>Registered Teams</h3>";
         snapshot.forEach((child) => {
           let data = child.val();
@@ -106,8 +114,8 @@
       });
     }
 
-    // Join Tournament
-    function joinTournament() {
+    // ✅ Join Tournament
+    async function joinTournament() {
       const teamName = document.getElementById("teamName").value;
       const uid1 = document.getElementById("uid1").value;
       const uid2 = document.getElementById("uid2").value;
@@ -121,12 +129,12 @@
         return;
       }
 
-      db.ref("tournaments/" + selectedTournament + "/slots").push({
+      await push(ref(db, "tournaments/" + selectedTournament + "/slots"), {
         teamName: teamName,
         uids: uids
       });
 
-      alert("You have successfully joined the tournament!");
+      alert("✅ You have successfully joined the tournament!");
       document.getElementById("teamName").value = "";
       document.getElementById("uid1").value = "";
       document.getElementById("uid2").value = "";
@@ -134,12 +142,16 @@
       document.getElementById("uid4").value = "";
     }
 
+    // ✅ Dropdown change event
     document.getElementById("tournamentList").addEventListener("change", (e) => {
       selectedTournament = e.target.value;
       showSlots(selectedTournament);
     });
 
     window.onload = loadTournaments;
+
+    // ✅ Expose function globally
+    window.joinTournament = joinTournament;
   </script>
 </body>
 </html>
