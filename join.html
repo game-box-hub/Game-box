@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Tournament - GameBox</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: black;
+      color: gold;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin: 20px 0;
+      background: linear-gradient(270deg, red, gold, blue, green);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: animate 6s linear infinite;
+    }
+    @keyframes animate {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    .card {
+      background: rgba(20, 20, 20, 0.95);
+      border: 2px solid gold;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px auto;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0px 0px 15px gold;
+      transition: 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.03);
+    }
+    button {
+      background: gold;
+      color: black;
+      border: none;
+      padding: 12px 20px;
+      margin: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #ffcc00;
+      transform: scale(1.05);
+    }
+    input {
+      padding: 10px;
+      margin: 8px;
+      border: 1px solid gold;
+      border-radius: 6px;
+      width: 80%;
+      background: black;
+      color: gold;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 95%;
+    }
+    table, th, td {
+      border: 1px solid gold;
+    }
+    th, td {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>JOIN TOURNAMENT</h1>
+
+  <div id="tournamentList" class="card">
+    <h2>Available Tournaments</h2>
+    <div id="list"></div>
+  </div>
+
+  <div id="joinForm" class="card" style="display:none;">
+    <h2 id="tournamentName"></h2>
+    <form id="joinTeamForm">
+      <input type="text" id="teamName" placeholder="Enter Team Name" required><br>
+      <input type="text" id="tournamentCode" placeholder="Enter Tournament Code" required><br>
+      <input type="text" id="uid1" placeholder="Player 1 UID" required><br>
+      <input type="text" id="uid2" placeholder="Player 2 UID" required><br>
+      <input type="text" id="uid3" placeholder="Player 3 UID" required><br>
+      <input type="text" id="uid4" placeholder="Player 4 UID" required><br>
+      <button type="submit">Join Tournament</button>
+    </form>
+  </div>
+
+  <div id="slotTable" class="card" style="display:none;">
+    <h3>Team Slots</h3>
+    <table id="slotsTable">
+      <tr><th>Slot</th><th>Team Name</th></tr>
+    </table>
+  </div>
+
+  <script type="module">
+    // Firebase Config
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
+      authDomain: "gamebox-a049d.firebaseapp.com",
+      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com",
+      projectId: "gamebox-a049d",
+      storageBucket: "gamebox-a049d.appspot.com",
+      messagingSenderId: "978725902064",
+      appId: "1:978725902064:web:1793d66e2fc29910d05435"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const tournamentListDiv = document.getElementById("list");
+    const joinForm = document.getElementById("joinForm");
+    const slotsDiv = document.getElementById("slotTable");
+    const slotsTable = document.getElementById("slotsTable");
+    let currentTournamentId = null;
+    let totalSlots = 0;
+
+    // Fetch tournaments from Firebase
+    onValue(ref(db, "tournaments"), (snapshot) => {
+      tournamentListDiv.innerHTML = "";
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        Object.keys(data).forEach(tId => {
+          const t = data[tId];
+          const btn = document.createElement("button");
+          btn.innerText = `${t.name} (${t.game})`;
+          btn.onclick = () => openTournament(tId, t);
+          tournamentListDiv.appendChild(btn);
+        });
+      } else {
+        tournamentListDiv.innerHTML = "<p>No tournaments available right now.</p>";
+      }
+    });
+
+    function openTournament(tId, tournament) {
+      currentTournamentId = tId;
+      totalSlots = tournament.slots;
+      document.getElementById("tournamentName").innerText = tournament.name;
+      joinForm.style.display = "block";
+      slotsDiv.style.display = "block";
+      loadSlots(tId);
+    }
+
+    function loadSlots(tId) {
+      slotsTable.innerHTML = "<tr><th>Slot</th><th>Team Name</th></tr>";
+      onValue(ref(db, "tournaments/" + tId + "/teams"), (snapshot) => {
+        slotsTable.innerHTML = "<tr><th>Slot</th><th>Team Name</th></tr>";
+        if (snapshot.exists()) {
+          const teams = snapshot.val();
+          let slotCount = 1;
+          Object.keys(teams).forEach(key => {
+            const team = teams[key];
+            const row = `<tr><td>${slotCount}</td><td>${team.teamName}</td></tr>`;
+            slotsTable.innerHTML += row;
+            slotCount++;
+          });
+        }
+      });
+    }
+
+    document.getElementById("joinTeamForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const teamData = {
+        teamName: document.getElementById("teamName").value,
+        code: document.getElementById("tournamentCode").value,
+        members: {
+          uid1: document.getElementById("uid1").value,
+          uid2: document.getElementById("uid2").value,
+          uid3: document.getElementById("uid3").value,
+          uid4: document.getElementById("uid4").value
+        }
+      };
+      const teamRef = push(ref(db, "tournaments/" + currentTournamentId + "/teams"));
+      set(teamRef, teamData).then(() => {
+        alert("Thank you! Your team has joined successfully.");
+        document.getElementById("joinTeamForm").reset();
+      });
+    });
+  </script>
+</body>
+</html>
