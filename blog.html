@@ -70,15 +70,33 @@
     <h2>Organise Tournament</h2>
     <form id="tournamentForm">
       <input type="text" id="tournamentName" placeholder="Tournament Name" required>
+      
       <select id="gameName" required>
         <option value="">Select Game</option>
         <option>PUBG Mobile / BGMI</option>
         <option>PUBG Lite</option>
         <option>Free Fire</option>
       </select>
+
       <input type="number" id="playersLimit" placeholder="Players Limit e.g. 100" min="2" required>
       <input type="number" id="teamSlots" placeholder="Team Slots e.g. 50" min="1" required>
       <input type="text" id="organizerContact" placeholder="Your Contact No." required>
+
+      <!-- NEW FIELDS -->
+      <select id="registrationMethod" required>
+        <option value="">Registration Method</option>
+        <option value="Free">Free</option>
+        <option value="Paid">Paid</option>
+      </select>
+
+      <select id="paymentMethod">
+        <option value="">Payment Method</option>
+        <option value="Google Pay">Google Pay</option>
+        <option value="PhonePe">PhonePe</option>
+      </select>
+
+      <input type="text" id="upiId" placeholder="Enter UPI ID (if Paid)">
+      
       <button type="submit">Organise Now</button>
     </form>
     <div id="notification" class="notification">
@@ -111,6 +129,9 @@
       const players = document.getElementById("playersLimit").value;
       const slots = document.getElementById("teamSlots").value;
       const contact = document.getElementById("organizerContact").value.trim();
+      const registrationMethod = document.getElementById("registrationMethod").value;
+      const paymentMethod = document.getElementById("paymentMethod").value;
+      const upiId = document.getElementById("upiId").value.trim();
 
       const newRef = db.ref("tournaments").push();
       newRef.set({
@@ -119,6 +140,9 @@
         playersLimit: players,
         teamSlots: slots,
         organizerContact: contact,
+        registrationMethod: registrationMethod,
+        paymentMethod: paymentMethod,
+        upiId: upiId,
         timestamp: new Date().toISOString()
       }).then(() => {
         document.getElementById("notification").style.display = "block";
