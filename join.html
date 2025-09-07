@@ -2,137 +2,174 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Join Tournament</title>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Tournament | GameBox Hub</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <style>
     body {
-      background: linear-gradient(135deg, white, yellow);
       font-family: Arial, sans-serif;
+      background: #fff;
       margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
+      padding: 0;
       color: #333;
     }
-    .tournament-card {
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-      padding: 20px;
-      margin-bottom: 20px;
+    header {
+      background: gold;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: black;
     }
-    .tournament-card h2 {
-      margin: 0;
-      color: #444;
+    .search-box {
+      margin: 15px auto;
+      width: 90%;
+      max-width: 500px;
     }
-    .tournament-card p {
-      margin: 5px 0;
-      color: #555;
-    }
-    .join-form {
-      margin-top: 10px;
-    }
-    .join-form input {
-      display: block;
-      width: 95%;
-      padding: 10px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
+    .search-box input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid gold;
       border-radius: 8px;
+      font-size: 16px;
     }
-    .join-form button {
-      background: yellow;
+    .tournaments {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background: #fffbea;
+      border: 2px solid gold;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      color: #333;
+    }
+    .info {
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    button {
+      background: gold;
+      color: black;
+      padding: 10px 20px;
       border: none;
-      padding: 10px;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
-      width: 100%;
+      margin-top: 10px;
     }
-    .join-form button:hover {
-      background: orange;
-      color: #fff;
+    button:hover {
+      background: #ffd700;
     }
   </style>
 </head>
 <body>
-  <h1>Available Tournaments</h1>
-  <div id="tournamentList"></div>
 
-  <script>
-    // 🔥 Firebase Config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "gamebox-a049d.firebaseapp.com",
-      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com/",
-      projectId: "gamebox-a049d",
-      storageBucket: "gamebox-a049d.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+<header>Join Tournament</header>
 
-    // Load tournaments
-    db.ref("tournaments").on("value", (snapshot) => {
-      const list = document.getElementById("tournamentList");
-      list.innerHTML = "";
-      snapshot.forEach(tData => {
-        const t = tData.val();
-        const div = document.createElement("div");
-        div.className = "tournament-card";
+<div class="search-box">
+  <input type="text" id="searchInput" placeholder="Search tournaments by name...">
+</div>
 
-        div.innerHTML = `
-          <h2>${t.name}</h2>
-          <p><b>Game:</b> ${t.game}</p>
-          <p><b>Type:</b> ${t.registration}</p>
-          <p><b>Fee:</b> ${t.registration === "Paid" ? "₹" + t.fee : "Free"}</p>
-          <p><b>Date:</b> ${t.date}</p>
-          <p><b>Time:</b> ${t.time}</p>
-          <form class="join-form" onsubmit="joinTournament(event, '${tData.key}', '${t.registration}', '${t.paymentMethod}', '${t.upi}', '${t.fee}')">
-            <input type="text" id="teamName-${tData.key}" placeholder="Enter Team Name" required>
-            <input type="text" id="uid1-${tData.key}" placeholder="Enter Player 1 UID" required>
-            <input type="text" id="uid2-${tData.key}" placeholder="Enter Player 2 UID" required>
-            <input type="text" id="uid3-${tData.key}" placeholder="Enter Player 3 UID" required>
-            <input type="text" id="uid4-${tData.key}" placeholder="Enter Player 4 UID" required>
-            <button type="submit">Join Now</button>
-          </form>
-        `;
-        list.appendChild(div);
-      });
-    });
+<div class="tournaments" id="tournamentList"></div>
 
-    // Function to handle join
-    function joinTournament(event, id, type, method, upi, fee) {
-      event.preventDefault();
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
+    authDomain: "gamebox-a049d.firebaseapp.com",
+    databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com/",
+    projectId: "gamebox-a049d",
+    storageBucket: "gamebox-a049d.appspot.com",
+    messagingSenderId: "978725902064",
+    appId: "1:978725902064:web:1793d66e2fc29910d05435"
+  };
 
-      const teamName = document.getElementById(`teamName-${id}`).value;
-      const uid1 = document.getElementById(`uid1-${id}`).value;
-      const uid2 = document.getElementById(`uid2-${id}`).value;
-      const uid3 = document.getElementById(`uid3-${id}`).value;
-      const uid4 = document.getElementById(`uid4-${id}`).value;
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-      if (type === "Free") {
-        // Directly save in Firebase
-        db.ref(`tournaments/${id}/teams`).push({
-          teamName, uid1, uid2, uid3, uid4
+  const tournamentList = document.getElementById("tournamentList");
+  const searchInput = document.getElementById("searchInput");
+
+  // Load tournaments from Firebase
+  function loadTournaments() {
+    db.ref("tournaments").on("value", snapshot => {
+      const data = snapshot.val();
+      tournamentList.innerHTML = "";
+
+      if (data) {
+        Object.keys(data).forEach(id => {
+          const t = data[id];
+
+          // Card create
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <h3>${t.tournamentName || "Unknown Tournament"}</h3>
+            <div class="info"><b>Game:</b> ${t.gameName || "-"}</div>
+            <div class="info"><b>Players Limit:</b> ${t.playersLimit || "-"}</div>
+            <div class="info"><b>Team Slots:</b> ${t.teamSlots || "-"}</div>
+            <div class="info"><b>Registration:</b> ${t.registrationMethod || "Free"}</div>
+            <div class="info"><b>Fee:</b> ₹${t.registrationFee ? t.registrationFee : 0}</div>
+            <div class="info"><b>Date & Time:</b> ${t.dateTime || "-"}</div>
+            <button onclick="joinTournament('${id}')">Join Now</button>
+          `;
+          tournamentList.appendChild(card);
         });
-        alert("✅ Joined Successfully!");
       } else {
-        // Paid → Generate UPI deeplink
-        const deeplink = `upi://pay?pa=${upi}&pn=Organiser&tn=Tournament+Registration&am=${fee}&cu=INR`;
+        tournamentList.innerHTML = "<p style='text-align:center;'>No tournaments available.</p>";
+      }
+    });
+  }
 
-        // Save details temporarily in Firebase (Pending)
-        db.ref(`tournaments/${id}/pending`).push({
-          teamName, uid1, uid2, uid3, uid4, fee
-        });
+  // Search filter
+  searchInput.addEventListener("keyup", function() {
+    let filter = searchInput.value.toLowerCase();
+    let cards = tournamentList.getElementsByClassName("card");
 
-        // Redirect to UPI app
-        window.location.href = deeplink;
+    for (let i = 0; i < cards.length; i++) {
+      let title = cards[i].getElementsByTagName("h3")[0];
+      if (title.innerText.toLowerCase().indexOf(filter) > -1) {
+        cards[i].style.display = "";
+      } else {
+        cards[i].style.display = "none";
       }
     }
-  </script>
+  });
+
+  // Join tournament
+  function joinTournament(id) {
+    db.ref("tournaments/" + id).once("value").then(snapshot => {
+      const t = snapshot.val();
+      if (!t) return alert("Tournament not found!");
+
+      if (t.registrationMethod === "Paid" && t.paymentMethod) {
+        // Redirect to payment app
+        let amount = t.registrationFee || 0;
+        let upi = t.upiId || "";
+        if (!upi) {
+          alert("UPI ID not found for this organiser.");
+          return;
+        }
+
+        let url = `upi://pay?pa=${upi}&pn=Organizer&am=${amount}&cu=INR`;
+        window.location.href = url;
+      } else {
+        alert("✅ You have joined the tournament successfully!");
+      }
+    });
+  }
+
+  loadTournaments();
+</script>
+
 </body>
 </html>
