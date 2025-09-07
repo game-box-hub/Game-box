@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +23,7 @@
       padding: 30px;
       border-radius: 15px;
       box-shadow: 0 0 20px gold;
-      max-width: 420px;
+      max-width: 450px;
       width: 90%;
       text-align: center;
     }
@@ -70,24 +71,41 @@
     <h2>Organise Tournament</h2>
     <form id="tournamentForm">
       <input type="text" id="tournamentName" placeholder="Tournament Name" required>
-      
-      <!-- Game select -->
+
+      <!-- Game Selection -->
       <select id="gameName" required>
         <option value="">Select Game</option>
-        <option>PUBG Mobile</option>
-        <option>BGMI</option>
-        <option>PUBG Lite</option>
-        <option>Free Fire</option>
+        <option value="PUBG Mobile">PUBG Mobile</option>
+        <option value="BGMI">BGMI</option>
+        <option value="PUBG Lite">PUBG Lite</option>
+        <option value="Free Fire">Free Fire</option>
       </select>
+
+      <!-- Date and Time -->
+      <label style="color:white;">Tournament Date & Time:</label>
+      <input type="datetime-local" id="tournamentDate" required>
 
       <input type="number" id="playersLimit" placeholder="Players Limit e.g. 100" min="2" required>
       <input type="number" id="teamSlots" placeholder="Team Slots e.g. 50" min="1" required>
-      
-      <!-- Date and Time -->
-      <label style="float:left; font-size:14px; margin-top:10px;">Tournament Date & Time:</label>
-      <input type="datetime-local" id="tournamentDateTime" required>
-      
       <input type="text" id="organizerContact" placeholder="Your Contact No." required>
+
+      <!-- Registration Method -->
+      <label style="color:white;">Registration Method:</label>
+      <select id="registrationMethod" required>
+        <option value="Free">Free</option>
+        <option value="Paid">Paid</option>
+      </select>
+
+      <!-- Payment -->
+      <label style="color:white;">Payment Method:</label>
+      <select id="paymentMethod">
+        <option value="">Select</option>
+        <option value="Google Pay">Google Pay</option>
+        <option value="PhonePe">PhonePe</option>
+      </select>
+
+      <input type="text" id="upiId" placeholder="Enter your UPI ID">
+
       <button type="submit">Organise Now</button>
     </form>
     <div id="notification" class="notification">
@@ -117,19 +135,25 @@
 
       const tourName = document.getElementById("tournamentName").value.trim();
       const game = document.getElementById("gameName").value;
+      const dateTime = document.getElementById("tournamentDate").value;
       const players = document.getElementById("playersLimit").value;
       const slots = document.getElementById("teamSlots").value;
-      const dateTime = document.getElementById("tournamentDateTime").value;
       const contact = document.getElementById("organizerContact").value.trim();
+      const regMethod = document.getElementById("registrationMethod").value;
+      const paymentMethod = document.getElementById("paymentMethod").value;
+      const upiId = document.getElementById("upiId").value.trim();
 
       const newRef = db.ref("tournaments").push();
       newRef.set({
         tournamentName: tourName,
         gameName: game,
+        dateTime: dateTime,
         playersLimit: players,
         teamSlots: slots,
-        dateTime: dateTime,
         organizerContact: contact,
+        registrationMethod: regMethod,
+        paymentMethod: paymentMethod,
+        upiId: upiId,
         timestamp: new Date().toISOString()
       }).then(() => {
         document.getElementById("notification").style.display = "block";
