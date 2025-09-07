@@ -22,7 +22,7 @@
       padding: 30px;
       border-radius: 15px;
       box-shadow: 0 0 20px gold;
-      max-width: 400px;
+      max-width: 420px;
       width: 90%;
       text-align: center;
     }
@@ -71,32 +71,23 @@
     <form id="tournamentForm">
       <input type="text" id="tournamentName" placeholder="Tournament Name" required>
       
+      <!-- Game select -->
       <select id="gameName" required>
         <option value="">Select Game</option>
-        <option>PUBG Mobile / BGMI</option>
+        <option>PUBG Mobile</option>
+        <option>BGMI</option>
         <option>PUBG Lite</option>
         <option>Free Fire</option>
       </select>
 
       <input type="number" id="playersLimit" placeholder="Players Limit e.g. 100" min="2" required>
       <input type="number" id="teamSlots" placeholder="Team Slots e.g. 50" min="1" required>
-      <input type="text" id="organizerContact" placeholder="Your Contact No." required>
-
-      <!-- NEW FIELDS -->
-      <select id="registrationMethod" required>
-        <option value="">Registration Method</option>
-        <option value="Free">Free</option>
-        <option value="Paid">Paid</option>
-      </select>
-
-      <select id="paymentMethod">
-        <option value="">Payment Method</option>
-        <option value="Google Pay">Google Pay</option>
-        <option value="PhonePe">PhonePe</option>
-      </select>
-
-      <input type="text" id="upiId" placeholder="Enter UPI ID (if Paid)">
       
+      <!-- Date and Time -->
+      <label style="float:left; font-size:14px; margin-top:10px;">Tournament Date & Time:</label>
+      <input type="datetime-local" id="tournamentDateTime" required>
+      
+      <input type="text" id="organizerContact" placeholder="Your Contact No." required>
       <button type="submit">Organise Now</button>
     </form>
     <div id="notification" class="notification">
@@ -128,10 +119,8 @@
       const game = document.getElementById("gameName").value;
       const players = document.getElementById("playersLimit").value;
       const slots = document.getElementById("teamSlots").value;
+      const dateTime = document.getElementById("tournamentDateTime").value;
       const contact = document.getElementById("organizerContact").value.trim();
-      const registrationMethod = document.getElementById("registrationMethod").value;
-      const paymentMethod = document.getElementById("paymentMethod").value;
-      const upiId = document.getElementById("upiId").value.trim();
 
       const newRef = db.ref("tournaments").push();
       newRef.set({
@@ -139,10 +128,8 @@
         gameName: game,
         playersLimit: players,
         teamSlots: slots,
+        dateTime: dateTime,
         organizerContact: contact,
-        registrationMethod: registrationMethod,
-        paymentMethod: paymentMethod,
-        upiId: upiId,
         timestamp: new Date().toISOString()
       }).then(() => {
         document.getElementById("notification").style.display = "block";
