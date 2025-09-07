@@ -2,149 +2,137 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Join Tournament - GameBox</title>
+  <title>Join Tournament</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <style>
     body {
+      background: linear-gradient(135deg, white, yellow);
       font-family: Arial, sans-serif;
-      background: #fff;
-      color: #111;
       margin: 0;
-      padding: 0;
+      padding: 20px;
     }
-    header {
-      background: gold;
-      color: black;
-      padding: 15px;
+    h1 {
       text-align: center;
-      font-size: 22px;
-      font-weight: bold;
+      color: #333;
     }
-    .container {
-      padding: 20px;
-    }
-    .search-box {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
-      border: 2px solid gold;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    .card {
-      background: #fff8dc;
-      border: 1px solid gold;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
+    .tournament-card {
+      background: #fff;
+      border-radius: 15px;
       box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
     }
-    .card h3 {
-      margin: 0 0 10px;
-      color: #111;
-    }
-    .details {
-      font-size: 14px;
-      margin-bottom: 12px;
+    .tournament-card h2 {
+      margin: 0;
       color: #444;
     }
-    button {
-      background: gold;
-      border: none;
-      padding: 10px 18px;
+    .tournament-card p {
+      margin: 5px 0;
+      color: #555;
+    }
+    .join-form {
+      margin-top: 10px;
+    }
+    .join-form input {
+      display: block;
+      width: 95%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
       border-radius: 8px;
-      font-size: 15px;
+    }
+    .join-form button {
+      background: yellow;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
+      width: 100%;
     }
-    button:hover {
-      background: #ffdf00;
+    .join-form button:hover {
+      background: orange;
+      color: #fff;
     }
   </style>
 </head>
 <body>
-  <header>Join Tournament</header>
+  <h1>Available Tournaments</h1>
+  <div id="tournamentList"></div>
 
-  <div class="container">
-    <input type="text" id="searchBox" class="search-box" placeholder="Search Tournament...">
-
-    <div id="tournamentList"></div>
-  </div>
-
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-
+  <script>
+    // 🔥 Firebase Config
     const firebaseConfig = {
-      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
+      apiKey: "YOUR_API_KEY",
       authDomain: "gamebox-a049d.firebaseapp.com",
       databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com/",
       projectId: "gamebox-a049d",
       storageBucket: "gamebox-a049d.appspot.com",
-      messagingSenderId: "978725902064",
-      appId: "1:978725902064:web:1793d66e2fc29910d05435"
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    // Load tournaments
+    db.ref("tournaments").on("value", (snapshot) => {
+      const list = document.getElementById("tournamentList");
+      list.innerHTML = "";
+      snapshot.forEach(tData => {
+        const t = tData.val();
+        const div = document.createElement("div");
+        div.className = "tournament-card";
 
-    const listDiv = document.getElementById("tournamentList");
-    const searchBox = document.getElementById("searchBox");
-
-    async function loadTournaments() {
-      const snapshot = await get(ref(db, "tournaments"));
-      listDiv.innerHTML = "";
-
-      if (snapshot.exists()) {
-        snapshot.forEach(child => {
-          const data = child.val();
-
-          // Tournament Card
-          const card = document.createElement("div");
-          card.className = "card";
-
-          card.innerHTML = `
-            <h3>${data.tournamentName}</h3>
-            <div class="details">
-              <b>Game:</b> ${data.gameName}<br>
-              <b>Players Limit:</b> ${data.playersLimit}<br>
-              <b>Team Slots:</b> ${data.teamSlots}<br>
-              <b>Type:</b> ${data.registrationMethod || "Free"}<br>
-              <b>Date & Time:</b> ${data.tournamentDate || "Not set"}
-            </div>
-            <button onclick="joinTournament('${child.key}','${data.registrationMethod || "Free"}')">Join Now</button>
-          `;
-
-          listDiv.appendChild(card);
-        });
-      } else {
-        listDiv.innerHTML = "<p>No tournaments available</p>";
-      }
-    }
-
-    // ✅ Search Function
-    searchBox.addEventListener("input", function() {
-      const searchText = this.value.toLowerCase();
-      const cards = document.querySelectorAll(".card");
-      cards.forEach(card => {
-        const text = card.innerText.toLowerCase();
-        card.style.display = text.includes(searchText) ? "block" : "none";
+        div.innerHTML = `
+          <h2>${t.name}</h2>
+          <p><b>Game:</b> ${t.game}</p>
+          <p><b>Type:</b> ${t.registration}</p>
+          <p><b>Fee:</b> ${t.registration === "Paid" ? "₹" + t.fee : "Free"}</p>
+          <p><b>Date:</b> ${t.date}</p>
+          <p><b>Time:</b> ${t.time}</p>
+          <form class="join-form" onsubmit="joinTournament(event, '${tData.key}', '${t.registration}', '${t.paymentMethod}', '${t.upi}', '${t.fee}')">
+            <input type="text" id="teamName-${tData.key}" placeholder="Enter Team Name" required>
+            <input type="text" id="uid1-${tData.key}" placeholder="Enter Player 1 UID" required>
+            <input type="text" id="uid2-${tData.key}" placeholder="Enter Player 2 UID" required>
+            <input type="text" id="uid3-${tData.key}" placeholder="Enter Player 3 UID" required>
+            <input type="text" id="uid4-${tData.key}" placeholder="Enter Player 4 UID" required>
+            <button type="submit">Join Now</button>
+          </form>
+        `;
+        list.appendChild(div);
       });
     });
 
-    // ✅ Join Tournament Function
-    window.joinTournament = function(id, type) {
-      if (type.toLowerCase() === "free") {
-        alert("✅ Successfully joined the free tournament!");
+    // Function to handle join
+    function joinTournament(event, id, type, method, upi, fee) {
+      event.preventDefault();
+
+      const teamName = document.getElementById(`teamName-${id}`).value;
+      const uid1 = document.getElementById(`uid1-${id}`).value;
+      const uid2 = document.getElementById(`uid2-${id}`).value;
+      const uid3 = document.getElementById(`uid3-${id}`).value;
+      const uid4 = document.getElementById(`uid4-${id}`).value;
+
+      if (type === "Free") {
+        // Directly save in Firebase
+        db.ref(`tournaments/${id}/teams`).push({
+          teamName, uid1, uid2, uid3, uid4
+        });
+        alert("✅ Joined Successfully!");
       } else {
-        alert("💰 This is a Paid Tournament. Please complete the payment via Google Pay / PhonePe to the organiser.");
-        window.location.href = "index.html"; // auto back agar payment nahi karega
+        // Paid → Generate UPI deeplink
+        const deeplink = `upi://pay?pa=${upi}&pn=Organiser&tn=Tournament+Registration&am=${fee}&cu=INR`;
+
+        // Save details temporarily in Firebase (Pending)
+        db.ref(`tournaments/${id}/pending`).push({
+          teamName, uid1, uid2, uid3, uid4, fee
+        });
+
+        // Redirect to UPI app
+        window.location.href = deeplink;
       }
     }
-
-    window.onload = loadTournaments;
   </script>
 </body>
 </html>
