@@ -3,52 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Join Tournament | GameBox Hub</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <title>Join Tournament - GameBox</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #111, #222);
-      color: white;
+      background: #fff;
+      color: #111;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-    h2 {
-      color: gold;
+    header {
+      background: gold;
+      color: black;
+      padding: 15px;
       text-align: center;
-      margin-bottom: 20px;
+      font-size: 22px;
+      font-weight: bold;
     }
-    .tournament {
-      background: #222;
-      border: 1px solid gold;
+    .container {
       padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      box-shadow: 0 0 10px gold;
     }
-    .tournament h3 {
-      margin: 0 0 10px 0;
-      color: gold;
+    .search-box {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 2px solid gold;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .card {
+      background: #fff8dc;
+      border: 1px solid gold;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      color: #111;
+    }
+    .details {
+      font-size: 14px;
+      margin-bottom: 12px;
+      color: #444;
     }
     button {
       background: gold;
-      color: black;
-      padding: 10px 20px;
       border: none;
+      padding: 10px 18px;
       border-radius: 8px;
+      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 10px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #ffdf00;
     }
   </style>
 </head>
 <body>
-  <h2>Available Tournaments</h2>
-  <div id="tournaments"></div>
+  <header>Join Tournament</header>
 
-  <script>
-    // Firebase Config
+  <div class="container">
+    <input type="text" id="searchBox" class="search-box" placeholder="Search Tournament...">
+
+    <div id="tournamentList"></div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
       authDomain: "gamebox-a049d.firebaseapp.com",
@@ -59,65 +87,64 @@
       appId: "1:978725902064:web:1793d66e2fc29910d05435"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    // Fetch Tournaments
-    db.ref("tournaments").on("value", snapshot => {
-      const data = snapshot.val();
-      const container = document.getElementById("tournaments");
-      container.innerHTML = "";
+    const listDiv = document.getElementById("tournamentList");
+    const searchBox = document.getElementById("searchBox");
 
-      if (data) {
-        Object.keys(data).forEach(key => {
-          const t = data[key];
-          const div = document.createElement("div");
-          div.classList.add("tournament");
+    async function loadTournaments() {
+      const snapshot = await get(ref(db, "tournaments"));
+      listDiv.innerHTML = "";
 
-          // Format Date/Time (agar diya hai to show karega)
-          let dateTime = t.dateTime ? new Date(t.dateTime).toLocaleString() : "Not set";
+      if (snapshot.exists()) {
+        snapshot.forEach(child => {
+          const data = child.val();
 
-          div.innerHTML = `
-            <h3>${t.tournamentName}</h3>
-            <p><b>Game:</b> ${t.gameName || "N/A"}</p>
-            <p><b>Date & Time:</b> ${dateTime}</p>
-            <p><b>Team Slots:</b> ${t.teamSlots || "N/A"}</p>
-            <p><b>Registration:</b> ${t.registrationMethod || "Free"}</p>
-            <p><b>Payment:</b> ${t.paymentMethod || "N/A"}</p>
-            <p><b>UPI:</b> ${t.upiId || "N/A"}</p>
-            <button onclick="joinTournament('${key}', '${t.registrationMethod}', '${t.paymentMethod}', '${t.upiId}')">Join Now</button>
+          // Tournament Card
+          const card = document.createElement("div");
+          card.className = "card";
+
+          card.innerHTML = `
+            <h3>${data.tournamentName}</h3>
+            <div class="details">
+              <b>Game:</b> ${data.gameName}<br>
+              <b>Players Limit:</b> ${data.playersLimit}<br>
+              <b>Team Slots:</b> ${data.teamSlots}<br>
+              <b>Type:</b> ${data.registrationMethod || "Free"}<br>
+              <b>Date & Time:</b> ${data.tournamentDate || "Not set"}
+            </div>
+            <button onclick="joinTournament('${child.key}','${data.registrationMethod || "Free"}')">Join Now</button>
           `;
 
-          container.appendChild(div);
+          listDiv.appendChild(card);
         });
       } else {
-        container.innerHTML = "<p>No tournaments available right now.</p>";
-      }
-    });
-
-    // Join Tournament Function
-    function joinTournament(tournamentId, regMethod, paymentMethod, upiId) {
-      if (regMethod === "Paid") {
-        // Google Pay / PhonePe Intent
-        let amount = 10; // ⚡ Isse tu customise kar sakta hai
-        let url = "";
-
-        if (paymentMethod === "GooglePay") {
-          url = `upi://pay?pa=${upiId}&pn=GameBox&mc=0000&tid=${Date.now()}&tr=${Date.now()}&tn=Tournament+Fee&am=${amount}&cu=INR`;
-        } else if (paymentMethod === "PhonePe") {
-          url = `upi://pay?pa=${upiId}&pn=GameBox&mc=0000&tid=${Date.now()}&tr=${Date.now()}&tn=Tournament+Fee&am=${amount}&cu=INR`;
-        }
-
-        if (url) {
-          window.location.href = url; // Direct app open
-        } else {
-          alert("⚠️ Payment method not set!");
-        }
-
-      } else {
-        alert("✅ You have successfully joined this Free tournament!");
+        listDiv.innerHTML = "<p>No tournaments available</p>";
       }
     }
+
+    // ✅ Search Function
+    searchBox.addEventListener("input", function() {
+      const searchText = this.value.toLowerCase();
+      const cards = document.querySelectorAll(".card");
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(searchText) ? "block" : "none";
+      });
+    });
+
+    // ✅ Join Tournament Function
+    window.joinTournament = function(id, type) {
+      if (type.toLowerCase() === "free") {
+        alert("✅ Successfully joined the free tournament!");
+      } else {
+        alert("💰 This is a Paid Tournament. Please complete the payment via Google Pay / PhonePe to the organiser.");
+        window.location.href = "index.html"; // auto back agar payment nahi karega
+      }
+    }
+
+    window.onload = loadTournaments;
   </script>
 </body>
 </html>
