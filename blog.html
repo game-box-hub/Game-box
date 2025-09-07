@@ -2,140 +2,168 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Organise Tournament</title>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organise Tournament | GameBox Hub</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <style>
     body {
-      background: linear-gradient(135deg, white, yellow);
       font-family: Arial, sans-serif;
-      padding: 20px;
+      background: #111;
+      color: gold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
     }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    form {
-      max-width: 500px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
+    .card {
+      background: #222;
+      padding: 30px;
       border-radius: 15px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 20px gold;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
     }
-    label {
-      font-weight: bold;
-      display: block;
-      margin: 10px 0 5px;
+    h2 {
+      margin-bottom: 20px;
+      color: gold;
     }
     input, select {
       width: 100%;
       padding: 10px;
+      margin: 10px 0;
+      border: 1px solid gold;
       border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-bottom: 15px;
+      background: #111;
+      color: gold;
     }
     button {
-      background: yellow;
+      background: gold;
+      color: black;
+      padding: 12px 24px;
       border: none;
-      padding: 10px;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
-      width: 100%;
+      margin-top: 10px;
+      transition: 0.3s ease;
     }
     button:hover {
-      background: orange;
-      color: #fff;
+      background: #fff200;
     }
-    .hidden {
+    .notification {
       display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background: #00b894;
+      color: white;
+      border-radius: 8px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Organise Your Tournament</h1>
-  <form id="tournamentForm">
-    <label>Tournament Name</label>
-    <input type="text" id="tournamentName" required>
 
-    <label>Game</label>
-    <select id="game" required>
-      <option value="PUBG Mobile">PUBG Mobile</option>
-      <option value="BGMI">BGMI</option>
-    </select>
+  <div class="card">
+    <h2>Organise Tournament</h2>
+    <form id="tournamentForm">
+      <!-- Tournament Info -->
+      <input type="text" id="tournamentName" placeholder="Tournament Name" required>
 
-    <label>Registration Method</label>
-    <select id="registration" required onchange="togglePaymentFields()">
-      <option value="Free">Free</option>
-      <option value="Paid">Paid</option>
-    </select>
-
-    <div id="paymentSection" class="hidden">
-      <label>Registration Fee (₹) (Full Team)</label>
-      <input type="number" id="fee" placeholder="Enter total amount for team" min="1">
-
-      <label>Payment Method</label>
-      <select id="paymentMethod">
-        <option value="GooglePay">GooglePay</option>
-        <option value="PhonePe">PhonePe</option>
+      <select id="gameName" required>
+        <option value="">Select Game</option>
+        <option>PUBG Mobile</option>
+        <option>BGMI</option>
+        <option>PUBG Lite</option>
+        <option>Free Fire</option>
       </select>
 
-      <label>Your UPI ID</label>
-      <input type="text" id="upi" placeholder="example@upi">
+      <input type="number" id="playersLimit" placeholder="Players Limit e.g. 100" min="2" required>
+      <input type="number" id="teamSlots" placeholder="Team Slots e.g. 50" min="1" required>
+      <input type="text" id="organizerContact" placeholder="Your Contact No." required>
+
+      <!-- Registration Method -->
+      <label style="float:left;">Registration Method</label>
+      <select id="registrationMethod" required>
+        <option value="">Select</option>
+        <option value="Free">Free</option>
+        <option value="Paid">Paid</option>
+      </select>
+
+      <!-- Payment Method -->
+      <label style="float:left;">Payment Method</label>
+      <select id="paymentMethod">
+        <option value="">Select</option>
+        <option>Google Pay</option>
+        <option>PhonePe</option>
+      </select>
+
+      <input type="text" id="upiId" placeholder="Enter Your UPI ID">
+      <input type="number" id="registrationFee" placeholder="Registration Fee (₹ per team)">
+
+      <!-- Date & Time -->
+      <label style="float:left;">Select Date & Time</label>
+      <input type="datetime-local" id="tournamentDate" required>
+
+      <button type="submit">Organise Now</button>
+    </form>
+    <div id="notification" class="notification">
+      ✅ Thank you! Your tournament is organised successfully.
     </div>
-
-    <label>Total Team Slots</label>
-    <input type="number" id="slots" placeholder="Enter number of teams" required>
-
-    <label>Date</label>
-    <input type="date" id="date" required>
-
-    <label>Time</label>
-    <input type="time" id="time" required>
-
-    <button type="submit">Organise Tournament</button>
-  </form>
+  </div>
 
   <script>
-    // 🔥 Firebase Config
+    // Firebase configuration
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
+      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
       authDomain: "gamebox-a049d.firebaseapp.com",
       databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com/",
       projectId: "gamebox-a049d",
       storageBucket: "gamebox-a049d.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      messagingSenderId: "978725902064",
+      appId: "1:978725902064:web:1793d66e2fc29910d05435"
     };
+
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    function togglePaymentFields() {
-      const registration = document.getElementById("registration").value;
-      document.getElementById("paymentSection").classList.toggle("hidden", registration === "Free");
-    }
-
-    document.getElementById("tournamentForm").addEventListener("submit", function(e){
+    // Handle the form submission
+    document.getElementById("tournamentForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
-      const name = document.getElementById("tournamentName").value;
-      const game = document.getElementById("game").value;
-      const registration = document.getElementById("registration").value;
-      const fee = registration === "Paid" ? document.getElementById("fee").value : 0;
-      const paymentMethod = registration === "Paid" ? document.getElementById("paymentMethod").value : "";
-      const upi = registration === "Paid" ? document.getElementById("upi").value : "";
-      const slots = document.getElementById("slots").value;
-      const date = document.getElementById("date").value;
-      const time = document.getElementById("time").value;
+      const tourName = document.getElementById("tournamentName").value.trim();
+      const game = document.getElementById("gameName").value;
+      const players = document.getElementById("playersLimit").value;
+      const slots = document.getElementById("teamSlots").value;
+      const contact = document.getElementById("organizerContact").value.trim();
+      const regMethod = document.getElementById("registrationMethod").value;
+      const payMethod = document.getElementById("paymentMethod").value;
+      const upi = document.getElementById("upiId").value.trim();
+      const fee = document.getElementById("registrationFee").value;
+      const dateTime = document.getElementById("tournamentDate").value;
 
-      db.ref("tournaments").push({
-        name, game, registration, fee, paymentMethod, upi, slots, date, time
+      const newRef = db.ref("tournaments").push();
+      newRef.set({
+        tournamentName: tourName,
+        gameName: game,
+        playersLimit: players,
+        teamSlots: slots,
+        organizerContact: contact,
+        registrationMethod: regMethod,
+        paymentMethod: payMethod,
+        upiId: upi,
+        registrationFee: fee,
+        dateTime: dateTime,
+        timestamp: new Date().toISOString()
+      }).then(() => {
+        document.getElementById("notification").style.display = "block";
+        document.getElementById("tournamentForm").reset();
+      }).catch(err => {
+        alert("Error saving data: " + err.message);
       });
-
-      alert("✅ Your Tournament is Organised Successfully!");
-      document.getElementById("tournamentForm").reset();
-      togglePaymentFields();
     });
   </script>
 </body>
