@@ -49,6 +49,7 @@
       padding: 20px;
       margin-top: 15px;
       border-radius: 10px;
+      text-align: center;
     }
     input {
       display: block;
@@ -57,6 +58,10 @@
       padding: 10px;
       border: 1px solid gold;
       border-radius: 6px;
+    }
+    #closeBtn {
+      margin-top: 10px;
+      background: #ff9800;
     }
   </style>
 </head>
@@ -75,6 +80,7 @@
     <input type="text" id="uid3" placeholder="Player 3 UID">
     <input type="text" id="uid4" placeholder="Player 4 UID">
     <button onclick="submitJoin()">Submit & Join</button>
+    <button id="closeBtn" onclick="document.getElementById('joinForm').style.display='none'">Cancel</button>
   </div>
 
   <script type="module">
@@ -98,36 +104,45 @@
     let tournamentData = null;
 
     async function loadTournaments() {
-      const snapshot = await get(ref(db, "tournaments"));
-      const listDiv = document.getElementById("tournamentList");
-      listDiv.innerHTML = "";
+      try {
+        const snapshot = await get(ref(db, "tournaments"));
+        const listDiv = document.getElementById("tournamentList");
+        listDiv.innerHTML = "";
 
-      if (snapshot.exists()) {
-        snapshot.forEach((child) => {
-          let data = child.val();
-          let div = document.createElement("div");
-          div.className = "tournament";
-          div.innerHTML = `
-            <h3>${data.tournamentName}</h3>
-            <p><b>Game:</b> ${data.gameName}</p>
-            <p><b>Date:</b> ${data.date || "N/A"} | <b>Time:</b> ${data.time || "N/A"}</p>
-            <p><b>Type:</b> ${data.registrationMethod}</p>
-            ${data.registrationMethod === "Paid" ? `<p><b>Fee:</b> ₹${data.registrationFee}</p>` : ""}
-            <button onclick="openJoinForm('${child.key}')">Join Now</button>
-          `;
-          listDiv.appendChild(div);
-        });
-      } else {
-        listDiv.innerHTML = "<p>No tournaments available.</p>";
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            let data = child.val();
+            let div = document.createElement("div");
+            div.className = "tournament";
+            div.innerHTML = `
+              <h3>${data.tournamentName}</h3>
+              <p><b>Game:</b> ${data.gameName}</p>
+              <p><b>Date:</b> ${data.date || "N/A"} | <b>Time:</b> ${data.time || "N/A"}</p>
+              <p><b>Type:</b> ${data.registrationMethod}</p>
+              ${data.registrationMethod === "Paid" ? `<p><b>Fee:</b> ₹${data.registrationFee}</p>` : ""}
+              <button onclick="openJoinForm('${child.key}')">Join Now</button>
+            `;
+            listDiv.appendChild(div);
+          });
+        } else {
+          listDiv.innerHTML = "<p>No tournaments available.</p>";
+        }
+      } catch(err) {
+        console.error(err);
+        alert("Error loading tournaments");
       }
     }
 
     window.openJoinForm = async function(id) {
       selectedTournament = id;
-      const snapshot = await get(ref(db, "tournaments/" + id));
-      if (snapshot.exists()) {
-        tournamentData = snapshot.val();
-        document.getElementById("joinForm").style.display = "block";
+      try {
+        const snapshot = await get(ref(db, "tournaments/" + id));
+        if (snapshot.exists()) {
+          tournamentData = snapshot.val();
+          document.getElementById("joinForm").style.display = "block";
+        }
+      } catch(err) {
+        console.error(err);
       }
     };
 
@@ -146,6 +161,7 @@
         return;
       }
 
+      // Save team data
       await push(ref(db, "tournaments/" + selectedTournament + "/slots"), {
         teamName: teamName,
         uids: uids
@@ -154,10 +170,12 @@
       if (tournamentData.registrationMethod === "Free") {
         alert("✅ Successfully joined free tournament!");
       } else {
-        let upiLink = `upi://pay?pa=${tournamentData.organizerContact}&pn=${tournamentData.tournamentName}&am=${tournamentData.registrationFee}&cu=INR`;
+        // Paid tournament → open UPI payment
+        const upiLink = `upi://pay?pa=${tournamentData.organizerContact}&pn=${tournamentData.tournamentName}&am=${tournamentData.registrationFee}&cu=INR&tn=Tournament%20Fee`;
         window.location.href = upiLink;
       }
 
+      // Reset form
       document.getElementById("joinForm").style.display = "none";
       document.getElementById("teamName").value = "";
       document.getElementById("uid1").value = "";
@@ -170,8 +188,8 @@
       let input = document.getElementById("searchBar").value.toLowerCase();
       let items = document.getElementsByClassName("tournament");
       for (let i = 0; i < items.length; i++) {
-        let text = items[i].innerText.toLowerCase();
-        items[i].style.display = text.includes(input) ? "" : "none";
+        let tournamentName = items[i].querySelector('h3').innerText.toLowerCase();
+        items[i].style.display = tournamentName.includes(input) ? "" : "none";
       }
     };
 
