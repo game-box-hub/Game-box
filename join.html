@@ -27,7 +27,7 @@
       border-radius: 12px;
       padding: 15px;
       margin: 10px 0;
-      background: #fdfdfd;
+      background: #fff8dc;
       text-align: left;
     }
     button {
@@ -74,7 +74,7 @@
     <input type="text" id="uid2" placeholder="Player 2 UID">
     <input type="text" id="uid3" placeholder="Player 3 UID">
     <input type="text" id="uid4" placeholder="Player 4 UID">
-    <button onclick="submitJoin()">Submit & Pay</button>
+    <button onclick="submitJoin()">Submit & Join</button>
   </div>
 
   <script type="module">
@@ -154,7 +154,7 @@
       if (tournamentData.registrationMethod === "Free") {
         alert("✅ Successfully joined free tournament!");
       } else {
-        let upiLink = `upi://pay?pa=${tournamentData.organizerContact}@upi&pn=${tournamentData.tournamentName}&am=${tournamentData.registrationFee}&cu=INR`;
+        let upiLink = `upi://pay?pa=${tournamentData.organizerContact}&pn=${tournamentData.tournamentName}&am=${tournamentData.registrationFee}&cu=INR`;
         window.location.href = upiLink;
       }
 
