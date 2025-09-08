@@ -27,7 +27,7 @@
       border-radius: 12px;
       padding: 15px;
       margin: 10px 0;
-      background: #fff8dc;
+      background: #fdfdfd;
       text-align: left;
     }
     button {
@@ -42,14 +42,13 @@
     button:hover {
       background: #ffeb3b;
     }
-    #joinForm {
+    .joinForm {
       display: none;
       border: 2px solid gold;
       background: #fff8dc;
       padding: 20px;
       margin-top: 15px;
       border-radius: 10px;
-      text-align: center;
     }
     input {
       display: block;
@@ -59,10 +58,6 @@
       border: 1px solid gold;
       border-radius: 6px;
     }
-    #closeBtn {
-      margin-top: 10px;
-      background: #ff9800;
-    }
   </style>
 </head>
 <body>
@@ -70,18 +65,6 @@
   <input type="text" id="searchBar" placeholder="Search Tournament..." onkeyup="searchTournament()">
 
   <div id="tournamentList"></div>
-
-  <!-- Join Form -->
-  <div id="joinForm">
-    <h3>Fill Team Details</h3>
-    <input type="text" id="teamName" placeholder="Team Name" required>
-    <input type="text" id="uid1" placeholder="Player 1 UID" required>
-    <input type="text" id="uid2" placeholder="Player 2 UID">
-    <input type="text" id="uid3" placeholder="Player 3 UID">
-    <input type="text" id="uid4" placeholder="Player 4 UID">
-    <button onclick="submitJoin()">Submit & Join</button>
-    <button id="closeBtn" onclick="document.getElementById('joinForm').style.display='none'">Cancel</button>
-  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -100,96 +83,73 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    let selectedTournament = null;
-    let tournamentData = null;
-
     async function loadTournaments() {
-      try {
-        const snapshot = await get(ref(db, "tournaments"));
-        const listDiv = document.getElementById("tournamentList");
-        listDiv.innerHTML = "";
+      const snapshot = await get(ref(db, "tournaments"));
+      const listDiv = document.getElementById("tournamentList");
+      listDiv.innerHTML = "";
 
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            let data = child.val();
-            let div = document.createElement("div");
-            div.className = "tournament";
-            div.innerHTML = `
-              <h3>${data.tournamentName}</h3>
-              <p><b>Game:</b> ${data.gameName}</p>
-              <p><b>Date:</b> ${data.date || "N/A"} | <b>Time:</b> ${data.time || "N/A"}</p>
-              <p><b>Type:</b> ${data.registrationMethod}</p>
-              ${data.registrationMethod === "Paid" ? `<p><b>Fee:</b> ₹${data.registrationFee}</p>` : ""}
-              <button onclick="openJoinForm('${child.key}')">Join Now</button>
-            `;
-            listDiv.appendChild(div);
-          });
-        } else {
-          listDiv.innerHTML = "<p>No tournaments available.</p>";
-        }
-      } catch(err) {
-        console.error(err);
-        alert("Error loading tournaments");
+      if (snapshot.exists()) {
+        snapshot.forEach((child) => {
+          let data = child.val();
+          let div = document.createElement("div");
+          div.className = "tournament";
+          div.innerHTML = `
+            <h3>${data.tournamentName}</h3>
+            <p><b>Game:</b> ${data.gameName}</p>
+            <p><b>Date:</b> ${data.date || "N/A"} | <b>Time:</b> ${data.time || "N/A"}</p>
+            <button onclick="openJoinForm('${child.key}')">Join Now</button>
+            <div class="joinForm" id="form-${child.key}">
+              <h3>Fill Team Details</h3>
+              <input type="text" id="teamName-${child.key}" placeholder="Team Name" required>
+              <input type="text" id="uid1-${child.key}" placeholder="Player 1 UID" required>
+              <input type="text" id="uid2-${child.key}" placeholder="Player 2 UID">
+              <input type="text" id="uid3-${child.key}" placeholder="Player 3 UID">
+              <input type="text" id="uid4-${child.key}" placeholder="Player 4 UID">
+              <input type="text" id="contact-${child.key}" placeholder="Contact Number" required>
+              <button onclick="submitJoin('${child.key}')">Submit</button>
+            </div>
+          `;
+          listDiv.appendChild(div);
+        });
+      } else {
+        listDiv.innerHTML = "<p>No tournaments available.</p>";
       }
     }
 
-    window.openJoinForm = async function(id) {
-      selectedTournament = id;
-      try {
-        const snapshot = await get(ref(db, "tournaments/" + id));
-        if (snapshot.exists()) {
-          tournamentData = snapshot.val();
-          document.getElementById("joinForm").style.display = "block";
-        }
-      } catch(err) {
-        console.error(err);
-      }
+    window.openJoinForm = function(id) {
+      document.querySelectorAll(".joinForm").forEach(f => f.style.display = "none");
+      document.getElementById("form-" + id).style.display = "block";
     };
 
-    window.submitJoin = async function() {
-      if (!tournamentData) return;
+    window.submitJoin = async function(id) {
+      const teamName = document.getElementById("teamName-" + id).value.trim();
+      const uid1 = document.getElementById("uid1-" + id).value.trim();
+      const uid2 = document.getElementById("uid2-" + id).value.trim();
+      const uid3 = document.getElementById("uid3-" + id).value.trim();
+      const uid4 = document.getElementById("uid4-" + id).value.trim();
+      const contact = document.getElementById("contact-" + id).value.trim();
 
-      const teamName = document.getElementById("teamName").value.trim();
-      const uid1 = document.getElementById("uid1").value.trim();
-      const uid2 = document.getElementById("uid2").value.trim();
-      const uid3 = document.getElementById("uid3").value.trim();
-      const uid4 = document.getElementById("uid4").value.trim();
-      const uids = [uid1, uid2, uid3, uid4].filter(u => u);
-
-      if (!teamName || !uid1) {
-        alert("Team name and at least 1 UID required!");
+      if (!teamName || !uid1 || !contact) {
+        alert("Team Name, Player 1 UID and Contact Number are required!");
         return;
       }
 
-      // Save team data
-      await push(ref(db, "tournaments/" + selectedTournament + "/slots"), {
+      await push(ref(db, "tournaments/" + id + "/slots"), {
         teamName: teamName,
-        uids: uids
+        uids: [uid1, uid2, uid3, uid4].filter(u => u),
+        contact: contact
       });
 
-      if (tournamentData.registrationMethod === "Free") {
-        alert("✅ Successfully joined free tournament!");
-      } else {
-        // Paid tournament → open UPI payment
-        const upiLink = `upi://pay?pa=${tournamentData.organizerContact}&pn=${tournamentData.tournamentName}&am=${tournamentData.registrationFee}&cu=INR&tn=Tournament%20Fee`;
-        window.location.href = upiLink;
-      }
-
-      // Reset form
-      document.getElementById("joinForm").style.display = "none";
-      document.getElementById("teamName").value = "";
-      document.getElementById("uid1").value = "";
-      document.getElementById("uid2").value = "";
-      document.getElementById("uid3").value = "";
-      document.getElementById("uid4").value = "";
+      alert("✅ Team successfully joined the tournament!");
+      document.getElementById("form-" + id).style.display = "none";
     };
 
     window.searchTournament = function () {
       let input = document.getElementById("searchBar").value.toLowerCase();
       let items = document.getElementsByClassName("tournament");
       for (let i = 0; i < items.length; i++) {
-        let tournamentName = items[i].querySelector('h3').innerText.toLowerCase();
-        items[i].style.display = tournamentName.includes(input) ? "" : "none";
+        let text = items[i].innerText.toLowerCase();
+        items[i].style.display = text.includes(input) ? "" : "none";
       }
     };
 
