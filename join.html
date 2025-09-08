@@ -42,6 +42,22 @@
     button:hover {
       background: #ffeb3b;
     }
+    #joinForm {
+      display: none;
+      border: 2px solid gold;
+      background: #fff8dc;
+      padding: 20px;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+    input {
+      display: block;
+      width: 90%;
+      margin: 8px auto;
+      padding: 10px;
+      border: 1px solid gold;
+      border-radius: 6px;
+    }
   </style>
 </head>
 <body>
@@ -49,6 +65,17 @@
   <input type="text" id="searchBar" placeholder="Search Tournament..." onkeyup="searchTournament()">
 
   <div id="tournamentList"></div>
+
+  <!-- Join Form -->
+  <div id="joinForm">
+    <h3>Fill Team Details</h3>
+    <input type="text" id="teamName" placeholder="Team Name" required>
+    <input type="text" id="uid1" placeholder="Player 1 UID" required>
+    <input type="text" id="uid2" placeholder="Player 2 UID">
+    <input type="text" id="uid3" placeholder="Player 3 UID">
+    <input type="text" id="uid4" placeholder="Player 4 UID">
+    <button onclick="submitJoin()">Submit & Pay</button>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -61,6 +88,97 @@
       projectId: "gamebox-a049d",
       storageBucket: "gamebox-a049d.appspot.com",
       messagingSenderId: "978725902064",
+      appId: "1:978725902064:web:1793d66e2fc29910d05435"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let selectedTournament = null;
+    let tournamentData = null;
+
+    async function loadTournaments() {
+      const snapshot = await get(ref(db, "tournaments"));
+      const listDiv = document.getElementById("tournamentList");
+      listDiv.innerHTML = "";
+
+      if (snapshot.exists()) {
+        snapshot.forEach((child) => {
+          let data = child.val();
+          let div = document.createElement("div");
+          div.className = "tournament";
+          div.innerHTML = `
+            <h3>${data.tournamentName}</h3>
+            <p><b>Game:</b> ${data.gameName}</p>
+            <p><b>Date:</b> ${data.date || "N/A"} | <b>Time:</b> ${data.time || "N/A"}</p>
+            <p><b>Type:</b> ${data.registrationMethod}</p>
+            ${data.registrationMethod === "Paid" ? `<p><b>Fee:</b> ₹${data.registrationFee}</p>` : ""}
+            <button onclick="openJoinForm('${child.key}')">Join Now</button>
+          `;
+          listDiv.appendChild(div);
+        });
+      } else {
+        listDiv.innerHTML = "<p>No tournaments available.</p>";
+      }
+    }
+
+    window.openJoinForm = async function(id) {
+      selectedTournament = id;
+      const snapshot = await get(ref(db, "tournaments/" + id));
+      if (snapshot.exists()) {
+        tournamentData = snapshot.val();
+        document.getElementById("joinForm").style.display = "block";
+      }
+    };
+
+    window.submitJoin = async function() {
+      if (!tournamentData) return;
+
+      const teamName = document.getElementById("teamName").value.trim();
+      const uid1 = document.getElementById("uid1").value.trim();
+      const uid2 = document.getElementById("uid2").value.trim();
+      const uid3 = document.getElementById("uid3").value.trim();
+      const uid4 = document.getElementById("uid4").value.trim();
+      const uids = [uid1, uid2, uid3, uid4].filter(u => u);
+
+      if (!teamName || !uid1) {
+        alert("Team name and at least 1 UID required!");
+        return;
+      }
+
+      await push(ref(db, "tournaments/" + selectedTournament + "/slots"), {
+        teamName: teamName,
+        uids: uids
+      });
+
+      if (tournamentData.registrationMethod === "Free") {
+        alert("✅ Successfully joined free tournament!");
+      } else {
+        let upiLink = `upi://pay?pa=${tournamentData.organizerContact}@upi&pn=${tournamentData.tournamentName}&am=${tournamentData.registrationFee}&cu=INR`;
+        window.location.href = upiLink;
+      }
+
+      document.getElementById("joinForm").style.display = "none";
+      document.getElementById("teamName").value = "";
+      document.getElementById("uid1").value = "";
+      document.getElementById("uid2").value = "";
+      document.getElementById("uid3").value = "";
+      document.getElementById("uid4").value = "";
+    };
+
+    window.searchTournament = function () {
+      let input = document.getElementById("searchBar").value.toLowerCase();
+      let items = document.getElementsByClassName("tournament");
+      for (let i = 0; i < items.length; i++) {
+        let text = items[i].innerText.toLowerCase();
+        items[i].style.display = text.includes(input) ? "" : "none";
+      }
+    };
+
+    window.onload = loadTournaments;
+  </script>
+</body>
+</html>      messagingSenderId: "978725902064",
       appId: "1:978725902064:web:1793d66e2fc29910d05435"
     };
 
