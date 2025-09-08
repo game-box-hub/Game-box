@@ -3,173 +3,119 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Join Tournament | GameBox Hub</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <title>Join Tournament - GameBox</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #fff;
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
-    header {
-      background: gold;
-      padding: 15px;
+      color: #111;
+      padding: 20px;
       text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      color: black;
     }
-    .search-box {
-      margin: 15px auto;
+    h2 {
+      color: gold;
+    }
+    #searchBar {
       width: 90%;
-      max-width: 500px;
-    }
-    .search-box input {
-      width: 100%;
       padding: 12px;
       border: 2px solid gold;
       border-radius: 8px;
-      font-size: 16px;
+      margin: 15px 0;
     }
-    .tournaments {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-    .card {
-      background: #fffbea;
+    .tournament {
       border: 2px solid gold;
       border-radius: 12px;
       padding: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    .card h3 {
-      margin: 0 0 10px;
-      color: #333;
-    }
-    .info {
-      font-size: 14px;
-      margin: 5px 0;
+      margin: 10px 0;
+      background: #fdfdfd;
+      text-align: left;
     }
     button {
       background: gold;
       color: black;
-      padding: 10px 20px;
+      padding: 10px 18px;
       border: none;
       border-radius: 8px;
-      font-weight: bold;
       cursor: pointer;
-      margin-top: 10px;
+      font-weight: bold;
     }
     button:hover {
-      background: #ffd700;
+      background: #ffeb3b;
     }
   </style>
 </head>
 <body>
+  <h2>Join Tournament</h2>
+  <input type="text" id="searchBar" placeholder="Search Tournament..." onkeyup="searchTournament()">
 
-<header>Join Tournament</header>
+  <div id="tournamentList"></div>
 
-<div class="search-box">
-  <input type="text" id="searchInput" placeholder="Search tournaments by name...">
-</div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, get, push } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-<div class="tournaments" id="tournamentList"></div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
+      authDomain: "gamebox-a049d.firebaseapp.com",
+      databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com/",
+      projectId: "gamebox-a049d",
+      storageBucket: "gamebox-a049d.appspot.com",
+      messagingSenderId: "978725902064",
+      appId: "1:978725902064:web:1793d66e2fc29910d05435"
+    };
 
-<script>
-  // Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyAbWLhXk_nrh7FwTy17jDp3MKqxqtooZ78",
-    authDomain: "gamebox-a049d.firebaseapp.com",
-    databaseURL: "https://gamebox-a049d-default-rtdb.firebaseio.com/",
-    projectId: "gamebox-a049d",
-    storageBucket: "gamebox-a049d.appspot.com",
-    messagingSenderId: "978725902064",
-    appId: "1:978725902064:web:1793d66e2fc29910d05435"
-  };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+    async function loadTournaments() {
+      const snapshot = await get(ref(db, "tournaments"));
+      const listDiv = document.getElementById("tournamentList");
+      listDiv.innerHTML = "";
 
-  const tournamentList = document.getElementById("tournamentList");
-  const searchInput = document.getElementById("searchInput");
-
-  // Load tournaments from Firebase
-  function loadTournaments() {
-    db.ref("tournaments").on("value", snapshot => {
-      const data = snapshot.val();
-      tournamentList.innerHTML = "";
-
-      if (data) {
-        Object.keys(data).forEach(id => {
-          const t = data[id];
-
-          // Card create
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `
-            <h3>${t.tournamentName || "Unknown Tournament"}</h3>
-            <div class="info"><b>Game:</b> ${t.gameName || "-"}</div>
-            <div class="info"><b>Players Limit:</b> ${t.playersLimit || "-"}</div>
-            <div class="info"><b>Team Slots:</b> ${t.teamSlots || "-"}</div>
-            <div class="info"><b>Registration:</b> ${t.registrationMethod || "Free"}</div>
-            <div class="info"><b>Fee:</b> ₹${t.registrationFee ? t.registrationFee : 0}</div>
-            <div class="info"><b>Date & Time:</b> ${t.dateTime || "-"}</div>
-            <button onclick="joinTournament('${id}')">Join Now</button>
+      if (snapshot.exists()) {
+        snapshot.forEach((child) => {
+          let data = child.val();
+          let div = document.createElement("div");
+          div.className = "tournament";
+          div.innerHTML = `
+            <h3>${data.tournamentName}</h3>
+            <p><b>Game:</b> ${data.gameName}</p>
+            <p><b>Date:</b> ${data.date || "N/A"} | <b>Time:</b> ${data.time || "N/A"}</p>
+            <p><b>Type:</b> ${data.registrationMethod}</p>
+            ${data.registrationMethod === "Paid" ? `<p><b>Fee:</b> ₹${data.registrationFee}</p>` : ""}
+            <button onclick="joinTournament('${child.key}','${data.registrationMethod}','${data.organizerContact}','${data.registrationFee}','${data.tournamentName}')">Join Now</button>
           `;
-          tournamentList.appendChild(card);
+          listDiv.appendChild(div);
         });
       } else {
-        tournamentList.innerHTML = "<p style='text-align:center;'>No tournaments available.</p>";
-      }
-    });
-  }
-
-  // Search filter
-  searchInput.addEventListener("keyup", function() {
-    let filter = searchInput.value.toLowerCase();
-    let cards = tournamentList.getElementsByClassName("card");
-
-    for (let i = 0; i < cards.length; i++) {
-      let title = cards[i].getElementsByTagName("h3")[0];
-      if (title.innerText.toLowerCase().indexOf(filter) > -1) {
-        cards[i].style.display = "";
-      } else {
-        cards[i].style.display = "none";
+        listDiv.innerHTML = "<p>No tournaments available.</p>";
       }
     }
-  });
 
-  // Join tournament
-  function joinTournament(id) {
-    db.ref("tournaments/" + id).once("value").then(snapshot => {
-      const t = snapshot.val();
-      if (!t) return alert("Tournament not found!");
-
-      if (t.registrationMethod === "Paid" && t.paymentMethod) {
-        // Redirect to payment app
-        let amount = t.registrationFee || 0;
-        let upi = t.upiId || "";
-        if (!upi) {
-          alert("UPI ID not found for this organiser.");
-          return;
-        }
-
-        let url = `upi://pay?pa=${upi}&pn=Organizer&am=${amount}&cu=INR`;
-        window.location.href = url;
+    window.joinTournament = async function(id, type, contact, fee, name) {
+      if (type === "Free") {
+        alert("✅ Successfully joined free tournament!");
+        await push(ref(db, "tournaments/" + id + "/slots"), {
+          teamName: "Team",
+          uids: ["Player1"]
+        });
       } else {
-        alert("✅ You have joined the tournament successfully!");
+        // 🔑 Open UPI payment (GooglePay, PhonePe, Paytm)
+        let upiLink = `upi://pay?pa=${contact}@upi&pn=${name}&am=${fee}&cu=INR`;
+        window.location.href = upiLink;
       }
-    });
-  }
+    };
 
-  loadTournaments();
-</script>
+    window.searchTournament = function () {
+      let input = document.getElementById("searchBar").value.toLowerCase();
+      let items = document.getElementsByClassName("tournament");
+      for (let i = 0; i < items.length; i++) {
+        let text = items[i].innerText.toLowerCase();
+        items[i].style.display = text.includes(input) ? "" : "none";
+      }
+    };
 
+    window.onload = loadTournaments;
+  </script>
 </body>
 </html>
